@@ -5,7 +5,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "doc",
       id: "intro",
-      label: "Prisma Calendar"
+      label: "Bases Improvements"
     },
     "installation",
     "quickstart",

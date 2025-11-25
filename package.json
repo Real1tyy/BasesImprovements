@@ -1,7 +1,7 @@
 {
-	"name": "prisma-calendar",
-	"version": "1.6.0",
-	"description": "Feature-rich, fully configurable calendar plugin for Obsidian with multiple calendars, templater, color rules, batch ops, and recurring events.",
+	"name": "bases-improvements",
+	"version": "1.0.0",
+	"description": "A powerful plugin for enhancing and improving your Obsidian bases workflow.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
@@ -20,11 +20,11 @@
 	},
 	"keywords": [
 		"obsidian",
-		"calendar",
+		"bases",
 		"plugin",
-		"scheduling",
-		"events",
-		"recurring"
+		"productivity",
+		"workflow",
+		"improvements"
 	],
 	"funding": {
 		"type": "github",

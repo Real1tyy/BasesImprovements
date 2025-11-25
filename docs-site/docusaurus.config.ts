@@ -2,23 +2,23 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-// Docusaurus config for Prisma Calendar docs
+// Docusaurus config for Bases Improvements docs
 
 const config: Config = {
-  title: 'Prisma Calendar',
-  tagline: 'A feature-rich, fully configurable calendar for Obsidian.',
-  favicon: 'img/PrismaCalendar.png',
+  title: 'Bases Improvements',
+  tagline: 'A powerful plugin for enhancing your Obsidian bases workflow.',
+  favicon: 'img/logo.svg',
 
   // Set the production url of your site here
   url: 'https://Real1tyy.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/Prisma-Calendar/',
+  baseUrl: '/BasesImprovements/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'Real1tyy', // Usually your GitHub org/user name.
-  projectName: 'Prisma-Calendar', // Usually your repo name.
+  projectName: 'BasesImprovements', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -42,7 +42,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/Real1tyy/Prisma-Calendar/edit/main/docs-site/',
+          editUrl: 'https://github.com/Real1tyy/BasesImprovements/edit/main/docs-site/',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
         },
@@ -73,16 +73,16 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/PrismaCalendar.png',
+    image: 'img/logo.svg',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Prisma Calendar',
+      title: 'Bases Improvements',
       logo: {
-        alt: 'Prisma Calendar Logo',
-        src: 'img/PrismaCalendar.png',
+        alt: 'Bases Improvements Logo',
+        src: 'img/logo.svg',
         href: '/', // Fix: Make logo/title link to root
       },
       items: [
@@ -92,12 +92,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://www.youtube.com/watch?v=aULuB6petbU',
-          label: 'Demo',
-          position: 'right',
-        },
-        {
-          href: 'https://github.com/Real1tyy/Prisma-Calendar',
+          href: 'https://github.com/Real1tyy/BasesImprovements',
           label: 'GitHub',
           position: 'right',
         },
@@ -110,7 +105,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Prisma Calendar',
+              label: 'Bases Improvements',
               to: '/',
             },
             {
@@ -132,7 +127,7 @@ const config: Config = {
             },
             {
               label: 'GitHub Issues',
-              href: 'https://github.com/Real1tyy/Prisma-Calendar/issues',
+              href: 'https://github.com/Real1tyy/BasesImprovements/issues',
             },
           ],
         },
@@ -140,16 +135,12 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Demo Video',
-              href: 'https://www.youtube.com/watch?v=aULuB6petbU',
-            },
-            {
               label: 'Repository',
-              href: 'https://github.com/Real1tyy/Prisma-Calendar',
+              href: 'https://github.com/Real1tyy/BasesImprovements',
             },
             {
               label: 'Releases',
-              href: 'https://github.com/Real1tyy/Prisma-Calendar/releases',
+              href: 'https://github.com/Real1tyy/BasesImprovements/releases',
             },
           ],
         },
@@ -171,7 +162,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} Prisma Calendar`,
+      copyright: `© ${new Date().getFullYear()} Bases Improvements`,
     },
     prism: {
       theme: prismThemes.github,

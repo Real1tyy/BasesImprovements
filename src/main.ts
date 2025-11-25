@@ -1,11 +1,11 @@
 import { onceAsync } from "@real1ty-obsidian-plugins/utils";
 import { Notice, Plugin, TFile } from "obsidian";
-import { CalendarView, CustomCalendarSettingsTab } from "./components";
+import { BasesImprovementsSettingsTab, CalendarView } from "./components";
 import { COMMAND_IDS } from "./constants";
 import { CalendarBundle, IndexerRegistry, SettingsStore } from "./core";
 import { createDefaultCalendarConfig } from "./utils/calendar-settings";
 
-export default class CustomCalendarPlugin extends Plugin {
+export default class BasesImprovementsPlugin extends Plugin {
 	settingsStore!: SettingsStore;
 	calendarBundles: CalendarBundle[] = [];
 	private registeredViewTypes: Set<string> = new Set();
@@ -17,7 +17,7 @@ export default class CustomCalendarPlugin extends Plugin {
 		await this.ensureMinimumCalendars();
 
 		this.initializeCalendarBundles();
-		this.addSettingTab(new CustomCalendarSettingsTab(this.app, this));
+		this.addSettingTab(new BasesImprovementsSettingsTab(this.app, this));
 
 		this.addCommand({
 			id: COMMAND_IDS.TOGGLE_BATCH_SELECTION,
@@ -67,7 +67,7 @@ export default class CustomCalendarPlugin extends Plugin {
 					}
 					if (calendarView && !calendarView.isInBatchSelectionMode()) {
 						if (!checking) {
-							new Notice("Prisma Calendar: Batch selection mode is not active");
+							new Notice("Bases Improvements: Batch selection mode is not active");
 						}
 						return true; // Still show the command, but notify user
 					}
