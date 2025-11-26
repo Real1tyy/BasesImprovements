@@ -1,73 +1,151 @@
-<div align="center">
-
 # Bases Improvements
 
-![Downloads](https://img.shields.io/github/downloads/Real1tyy/BasesImprovements/total?label=Downloads&style=for-the-badge)
-![Release](https://img.shields.io/github/v/release/Real1tyy/BasesImprovements?label=Latest%20Release&style=for-the-badge)
-![Stars](https://img.shields.io/github/stars/Real1tyy/BasesImprovements?style=for-the-badge)
-![License](https://img.shields.io/github/license/Real1tyy/BasesImprovements?style=for-the-badge)
-![Obsidian](https://img.shields.io/badge/obsidian-plugin-purple.svg?style=for-the-badge)
+An Obsidian plugin that enhances the Bases plugin workflow by adding dynamic search filtering to `base` code blocks.
 
-**A powerful plugin for enhancing and improving your Obsidian bases workflow.**
+## Features
 
----
+### 🔍 Dynamic Search Filtering
 
-</div>
+Automatically injects a search input field above every `base` code block in your notes. As you type, the plugin dynamically updates the base block content to include a `file.name.contains("value")` filter.
 
-## 📚 Documentation
+**How it works:**
 
-**[View Full Documentation →](https://github.com/Real1tyy/BasesImprovements)**
+1. **Detects `base` blocks** - The plugin watches your active note for any code blocks with the `base` language identifier
+2. **Injects input form** - Renders a styled search input above each base block
+3. **Live updates** - As you type, the filter is automatically added/updated in the base block with debounced input (150ms)
+4. **Smart filtering** - Intelligently adds the filter to existing WHERE clauses or creates new ones
 
----
+### Example Usage
 
-## 📦 Installation
+Before typing in the filter:
 
-Bases Improvements is currently **in development**. You can install it using one of these methods:
+````markdown
+```base
+FROM notes
+SELECT title, date
+```
+````
 
-### 🎯 Recommended: BRAT (Beta Reviewers Auto-update Tool)
+After typing "meeting" in the injected input:
 
-The easiest way to install and keep Bases Improvements up to date:
+````markdown
+```base
+FROM notes
+WHERE file.name.contains("meeting")
+SELECT title, date
+```
+````
 
-1. Install the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat) from Obsidian's Community Plugins
-2. Open BRAT settings (Settings → BRAT)
-3. Click **Add Beta Plugin**
-4. Enter this repository URL: `https://github.com/Real1tyy/BasesImprovements`
-5. Click **Add Plugin**
-6. Enable Bases Improvements in Settings → Community Plugins
+If there's already a WHERE clause, it appends with AND:
 
-**Benefits**: Automatic updates, smooth experience, one-click installation
+````markdown
+```base
+FROM notes
+WHERE date > "2024-01-01" AND file.name.contains("meeting")
+SELECT title, date
+```
+````
 
-### 📥 Manual Installation from GitHub Releases
+## Installation
 
-1. Go to [Releases](https://github.com/Real1tyy/BasesImprovements/releases)
-2. Download the latest release assets:
-   - `main.js`
-   - `manifest.json`
-   - `styles.css`
-3. Create folder: `{VaultFolder}/.obsidian/plugins/bases-improvements/`
-4. Move downloaded files into the folder
-5. Reload Obsidian (Ctrl/Cmd + R)
-6. Enable Bases Improvements in Settings → Community Plugins
+### From Source
 
-**Note**: All releases are versioned and tagged for easy reference.
+1. Clone this repository into your vault's `.obsidian/plugins/` directory
+2. Run `pnpm install` to install dependencies
+3. Run `pnpm build` to build the plugin
+4. Enable "Bases Improvements" in Obsidian's Community Plugins settings
 
----
+### Development
 
-## ✨ **Features**
+1. Clone the repository
+2. Run `pnpm install`
+3. Run `pnpm dev` for development with hot reload
+4. Make changes to files in `src/`
 
-Coming soon...
+## Commands
 
----
+- **Focus base block filter** - Focuses the first base filter input on the current page
 
-## Support & Sponsorship
+## Architecture
 
-If you find Bases Improvements useful and want to support its ongoing development, please consider becoming a sponsor. Your contribution helps ensure continuous maintenance, bug fixes, and the introduction of new features.
+The plugin uses a clean component-based architecture:
 
--   [Sponsor on GitHub](https://github.com/sponsors/Real1tyy)
--   [Buy Me a Coffee](https://www.buymeacoffee.com/real1ty)
+- **`BaseFilterInput`** - Reusable component that handles input rendering, debouncing, and events
+- **`BasesImprovementsPlugin`** - Main plugin class that manages component lifecycle and base block detection
+- **Event-driven updates** - Listens to workspace changes to dynamically update filters
 
-Every contribution, no matter the size, is greatly appreciated!
+### Key Features
 
-## Contributing
+- ✅ **Debounced input** - 150ms debounce prevents excessive updates
+- ✅ **Smart filter injection** - Handles both new filters and updates to existing filters
+- ✅ **Component composition** - Clean separation of concerns with reusable components
+- ✅ **Memory management** - Proper cleanup of components and event listeners
 
-MIT-licensed. PRs welcome!
+## Configuration
+
+Currently, the plugin works out of the box with no configuration needed. The filter syntax is automatically injected as:
+
+```
+file.name.contains("your-search-term")
+```
+
+This is compatible with Obsidian Bases query language.
+
+## Technical Details
+
+### Component Structure
+
+```
+src/
+├── components/
+│   ├── base-filter-input.ts  # Reusable filter input component
+│   └── index.ts               # Component exports
+└── main.ts                    # Main plugin class
+```
+
+### How It Works
+
+1. **Detection**: The plugin scans the active note for `base` code blocks using line-by-line parsing
+2. **Injection**: For each base block found, creates a `BaseFilterInput` component and injects it into the DOM
+3. **Updates**: When the input changes, the component triggers a callback that:
+   - Extracts the current block content
+   - Adds/updates the `file.name.contains()` filter
+   - Replaces the block content in the editor
+4. **Cleanup**: Components are properly destroyed when the note changes or the plugin unloads
+
+## Compatibility
+
+- **Obsidian**: 1.8.7+
+- **Bases Plugin**: Required for the base blocks to actually query your vault
+
+## Development
+
+### Build Commands
+
+- `pnpm dev` - Development build with hot reload
+- `pnpm build` - Production build
+- `pnpm typecheck` - Type checking
+- `pnpm check:fix` - Run Biome linting and formatting
+
+### Code Quality
+
+This project uses:
+- **Biome** for linting and formatting
+- **TypeScript** for type safety
+- **ESBuild** for fast builds
+
+## License
+
+MIT License - See LICENSE file for details
+
+## Author
+
+Real1tyy
+
+## Support
+
+If you find this plugin helpful, consider:
+- ⭐ Starring the repository
+- 🐛 Reporting issues
+- 💡 Suggesting new features
+- 💰 [Sponsoring on GitHub](https://github.com/sponsors/Real1tyy)
