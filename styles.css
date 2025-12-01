@@ -1,0 +1,28 @@
+.base-filter-wrapper {
+	padding: 8px;
+	margin: 4px 0;
+	background: var(--background-secondary);
+	border-radius: 4px;
+	border: 1px solid var(--background-modifier-border);
+}
+
+.base-filter-input {
+	width: 100%;
+	padding: 6px 10px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+.base-filter-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--interactive-accent-hover);
+}
+
+.base-filter-input::placeholder {
+	color: var(--text-muted);
+}
