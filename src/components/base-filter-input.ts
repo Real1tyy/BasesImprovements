@@ -1,3 +1,5 @@
+import { cls } from "../utils";
+
 export type FilterChangeCallback = (value: string, cursorPosition: number) => void;
 
 const DEFAULT_DEBOUNCE_MS = 150;
@@ -16,7 +18,7 @@ export class BaseFilterInput {
 
 	createWrapper(): HTMLElement {
 		this.wrapper = document.createElement("div");
-		this.wrapper.className = "base-filter-wrapper";
+		this.wrapper.className = cls("filter-wrapper");
 		return this.wrapper;
 	}
 
@@ -26,7 +28,7 @@ export class BaseFilterInput {
 		this.input = document.createElement("input");
 		this.input.type = "text";
 		this.input.placeholder = this.placeholder;
-		this.input.className = "base-filter-input";
+		this.input.className = cls("filter-input");
 
 		this.input.addEventListener("input", () => {
 			this.handleInputChange();
