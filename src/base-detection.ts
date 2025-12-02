@@ -57,27 +57,25 @@ export function extractBaseEmbed(line: string): string | null {
 
 export function findInlineBaseBlocks(editor: MinimalEditor): BaseBlock[] {
 	const text = getFullText(editor);
-	return Array.from(text.matchAll(BASE_BLOCK_REGEX))
-		.map((match) => {
-			const startLine = getLineNumber(text, match.index);
-			const content = match[1];
-			const endLine = startLine + countNewlines(match[0]);
+	return Array.from(text.matchAll(BASE_BLOCK_REGEX)).map((match) => {
+		const startLine = getLineNumber(text, match.index);
+		const content = match[1];
+		const endLine = startLine + countNewlines(match[0]);
 
-			return {
-				type: "inline",
-				startLine,
-				endLine,
-				content,
-				filterValue: extractFilterValue(content),
-			};
-		});
+		return {
+			type: "inline" as const,
+			startLine,
+			endLine,
+			content,
+			filterValue: extractFilterValue(content),
+		};
+	});
 }
 
 export function findBaseEmbeds(editor: MinimalEditor): BaseEmbedInfo[] {
 	const text = getFullText(editor);
-	return Array.from(text.matchAll(BASE_EMBED_REGEX))
-		.map((match) => ({
-			line: getLineNumber(text, match.index),
-			filePath: match[1],
-		}));
+	return Array.from(text.matchAll(BASE_EMBED_REGEX)).map((match) => ({
+		line: getLineNumber(text, match.index),
+		filePath: match[1],
+	}));
 }
