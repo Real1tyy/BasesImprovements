@@ -21,57 +21,63 @@ export interface BaseEmbedInfo {
 	filePath: string;
 }
 
-const BASE_EMBED_REGEX = /^!\[\[([^\]|]+\.base)(?:\|[^\]]+)?\]\]$/;
+const BASE_BLOCK_REGEX = /^[ \t]*```base[ \t]*\r?\n([\s\S]*?)^[ \t]*```[ \t]*$/gm;
+const BASE_EMBED_REGEX = /^[ \t]*!\[\[([^\]|]+\.base)(?:\|[^\]]+)?\]\][ \t]*$/gm;
+
+function getFullText(editor: MinimalEditor): string {
+	const count = editor.lineCount();
+	const lines = Array.from({ length: count }, (_, i) => editor.getLine(i));
+	return lines.join("\n");
+}
+
+function getLineNumber(text: string, charIndex: number): number {
+	let line = 0;
+	for (let i = 0; i < charIndex && i < text.length; i++) {
+		if (text[i] === "\n") {
+			line++;
+		}
+	}
+	return line;
+}
+
+function countNewlines(str: string): number {
+	let count = 0;
+	for (const char of str) {
+		if (char === "\n") {
+			count++;
+		}
+	}
+	return count;
+}
 
 export function extractBaseEmbed(line: string): string | null {
-	const match = line.trim().match(BASE_EMBED_REGEX);
+	const match = line.trim().match(/^!\[\[([^\]|]+\.base)(?:\|[^\]]+)?\]\]$/);
 	return match ? match[1] : null;
 }
 
 export function findInlineBaseBlocks(editor: MinimalEditor): BaseBlock[] {
-	const blocks: BaseBlock[] = [];
-	const lineCount = editor.lineCount();
+	const text = getFullText(editor);
+	return Array.from(text.matchAll(BASE_BLOCK_REGEX))
+		.map((match) => {
+			const startLine = getLineNumber(text, match.index);
+			const content = match[1];
+			const endLine = startLine + countNewlines(match[0]);
 
-	let inBaseBlock = false;
-	let blockStartLine = -1;
-	let blockContent = "";
-
-	for (let lineNum = 0; lineNum < lineCount; lineNum++) {
-		const lineText = editor.getLine(lineNum);
-
-		if (lineText.trim() === "```base") {
-			inBaseBlock = true;
-			blockStartLine = lineNum;
-			blockContent = "";
-		} else if (inBaseBlock && lineText.trim() === "```") {
-			blocks.push({
+			return {
 				type: "inline",
-				startLine: blockStartLine,
-				endLine: lineNum,
-				content: blockContent,
-				filterValue: extractFilterValue(blockContent),
-			});
-			inBaseBlock = false;
-		} else if (inBaseBlock) {
-			blockContent += `${lineText}\n`;
-		}
-	}
-
-	return blocks;
+				startLine,
+				endLine,
+				content,
+				filterValue: extractFilterValue(content),
+			};
+		});
 }
 
 export function findBaseEmbeds(editor: MinimalEditor): BaseEmbedInfo[] {
-	const embeds: BaseEmbedInfo[] = [];
-	const lineCount = editor.lineCount();
-
-	for (let lineNum = 0; lineNum < lineCount; lineNum++) {
-		const lineText = editor.getLine(lineNum);
-		const filePath = extractBaseEmbed(lineText);
-
-		if (filePath) {
-			embeds.push({ line: lineNum, filePath });
-		}
-	}
-
-	return embeds;
+	const text = getFullText(editor);
+	return Array.from(text.matchAll(BASE_EMBED_REGEX))
+		.map((match) => ({
+			line: getLineNumber(text, match.index),
+			filePath: match[1],
+		}));
 }
