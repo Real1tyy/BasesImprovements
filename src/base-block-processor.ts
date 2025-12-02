@@ -3,9 +3,11 @@ import { TFile } from "obsidian";
 import type { Subscription } from "rxjs";
 import { type BaseBlock, type BaseEmbedInfo, findBaseEmbeds, findInlineBaseBlocks } from "./base-detection";
 import { appendNameFilter, extractFilterValue } from "./base-filter";
-import { BaseFilterInput } from "./components";
+import { type ParsedBase, parseBaseContent, reconstructBaseWithView } from "./base-parser";
+import { BaseFilterInput, BaseViewSelector, type ViewOption } from "./components";
 import type { SettingsStore } from "./core";
 import type { BasesImprovementsSettings } from "./types";
+import { cls } from "./utils";
 
 interface PendingFocus {
 	key: string;
@@ -13,12 +15,25 @@ interface PendingFocus {
 	cursorPosition: number;
 }
 
+interface BlockState {
+	filterComponent: BaseFilterInput | null;
+	viewSelector: BaseViewSelector | null;
+	selectedViewIndex: number;
+	parsedBase: ParsedBase | null;
+	originalBaseContent: string;
+	originalEditorContent: string;
+	isEmbed: boolean;
+	isModified: boolean;
+	block: BaseBlock;
+}
+
 export class BaseBlockProcessor {
-	private filterComponents: Map<string, BaseFilterInput> = new Map();
+	private blockStates: Map<string, BlockState> = new Map();
 	private isProcessing = false;
 	private pendingFocus: PendingFocus | null = null;
 	private subscription: Subscription | null = null;
 	private settings: BasesImprovementsSettings;
+	private currentEditor: Editor | null = null;
 
 	constructor(
 		private app: App,
@@ -31,10 +46,12 @@ export class BaseBlockProcessor {
 	}
 
 	clearAllFilterComponents(): void {
-		for (const component of this.filterComponents.values()) {
-			component.destroy();
+		this.restoreAllOriginalContent();
+		for (const state of this.blockStates.values()) {
+			state.filterComponent?.destroy();
+			state.viewSelector?.destroy();
 		}
-		this.filterComponents.clear();
+		this.blockStates.clear();
 	}
 
 	destroy(): void {
@@ -43,9 +60,39 @@ export class BaseBlockProcessor {
 		this.clearAllFilterComponents();
 	}
 
+	private restoreAllOriginalContent(): void {
+		if (!this.currentEditor) {
+			return;
+		}
+
+		for (const state of this.blockStates.values()) {
+			if (state.isModified) {
+				this.restoreOriginalContent(this.currentEditor, state);
+			}
+		}
+	}
+
+	private restoreOriginalContent(editor: Editor, state: BlockState): void {
+		if (!state.isModified) {
+			return;
+		}
+
+		const { block, originalEditorContent, isEmbed } = state;
+		const { codeFenceLanguage } = this.settings;
+
+		if (isEmbed) {
+			this.replaceEditorRange(editor, block.startLine, block.endLine, originalEditorContent);
+		} else {
+			const wrappedContent = `\`\`\`${codeFenceLanguage}\n${state.originalBaseContent}\n\`\`\``;
+			this.replaceEditorRange(editor, block.startLine, block.endLine + 1, wrappedContent);
+		}
+
+		state.isModified = false;
+	}
+
 	private hasActiveInput(): boolean {
-		for (const component of this.filterComponents.values()) {
-			if (component.hasFocus()) {
+		for (const state of this.blockStates.values()) {
+			if (state.filterComponent?.hasFocus()) {
 				return true;
 			}
 		}
@@ -61,12 +108,15 @@ export class BaseBlockProcessor {
 			return;
 		}
 
-		if (!activeView || !this.settings.showFilterInput) {
+		const shouldProcess = this.settings.showFilterInput || this.settings.showViewSelector;
+		if (!activeView || !shouldProcess) {
 			this.clearAllFilterComponents();
+			this.currentEditor = null;
 			return;
 		}
 
 		this.isProcessing = true;
+		this.currentEditor = activeView.editor;
 		try {
 			await this.processView(activeView);
 		} finally {
@@ -83,7 +133,7 @@ export class BaseBlockProcessor {
 		const embeds = targetEmbeds ? findBaseEmbeds(editor) : [];
 
 		const expectedKeys = this.buildExpectedKeys(currentFile, inlineBlocks, embeds);
-		this.removeStaleComponents(expectedKeys);
+		this.removeStaleComponents(expectedKeys, editor);
 		this.injectInlineBlockComponents(activeView, editor, currentFile, inlineBlocks);
 
 		if (targetEmbeds) {
@@ -102,11 +152,15 @@ export class BaseBlockProcessor {
 		return keys;
 	}
 
-	private removeStaleComponents(expectedKeys: Set<string>): void {
-		for (const [key, component] of this.filterComponents.entries()) {
+	private removeStaleComponents(expectedKeys: Set<string>, editor: Editor): void {
+		for (const [key, state] of this.blockStates.entries()) {
 			if (!expectedKeys.has(key)) {
-				component.destroy();
-				this.filterComponents.delete(key);
+				if (state.isModified) {
+					this.restoreOriginalContent(editor, state);
+				}
+				state.filterComponent?.destroy();
+				state.viewSelector?.destroy();
+				this.blockStates.delete(key);
 			}
 		}
 	}
@@ -123,7 +177,7 @@ export class BaseBlockProcessor {
 			const block = blocks[i];
 			const key = `${currentFile}-inline-${i}`;
 
-			if (this.shouldSkipExistingComponent(key)) {
+			if (this.shouldSkipExistingComponent(key, editor)) {
 				continue;
 			}
 
@@ -132,23 +186,30 @@ export class BaseBlockProcessor {
 				continue;
 			}
 
-			this.injectFilterAboveElement(targetElement, editor, block, key);
+			const originalEditorContent = this.getEditorRangeContent(editor, block.startLine, block.endLine + 1);
+			this.injectComponentsAboveElement(targetElement, editor, block, key, false, originalEditorContent);
 		}
 	}
 
-	private shouldSkipExistingComponent(key: string): boolean {
-		const existingComponent = this.filterComponents.get(key);
-		if (!existingComponent) {
+	private shouldSkipExistingComponent(key: string, editor: Editor): boolean {
+		const existingState = this.blockStates.get(key);
+		if (!existingState) {
 			return false;
 		}
 
-		const wrapperInDom = existingComponent.getElement()?.isConnected;
-		if (wrapperInDom) {
+		const filterInDom = existingState.filterComponent?.getElement()?.isConnected;
+		const viewSelectorInDom = existingState.viewSelector?.getElement()?.isConnected;
+
+		if (filterInDom || viewSelectorInDom) {
 			return true;
 		}
 
-		existingComponent.destroy();
-		this.filterComponents.delete(key);
+		if (existingState.isModified) {
+			this.restoreOriginalContent(editor, existingState);
+		}
+		existingState.filterComponent?.destroy();
+		existingState.viewSelector?.destroy();
+		this.blockStates.delete(key);
 		return false;
 	}
 
@@ -162,7 +223,7 @@ export class BaseBlockProcessor {
 			const embed = embeds[i];
 			const key = `${currentFile}-embed-${i}`;
 
-			if (this.shouldSkipExistingComponent(key)) {
+			if (this.shouldSkipExistingComponent(key, editor)) {
 				continue;
 			}
 
@@ -189,6 +250,7 @@ export class BaseBlockProcessor {
 
 		const content = await this.app.vault.read(baseFile);
 		const filterValue = extractFilterValue(content);
+		const originalEditorContent = editor.getLine(embed.line);
 
 		const block: BaseBlock = {
 			type: "file",
@@ -201,7 +263,7 @@ export class BaseBlockProcessor {
 
 		const targetElement = this.findEmbedElementByPath(view, embed.filePath);
 		if (targetElement) {
-			this.injectFilterAboveElement(targetElement, editor, block, key);
+			this.injectComponentsAboveElement(targetElement, editor, block, key, true, originalEditorContent);
 		}
 	}
 
@@ -227,54 +289,178 @@ export class BaseBlockProcessor {
 	}
 
 	private findContainerForEmbed(element: HTMLElement): HTMLElement | null {
-		// For file embeds, the .internal-embed.bases-embed element IS the container
 		if (element.classList.contains("internal-embed") && element.classList.contains("bases-embed")) {
 			return element;
 		}
 		return null;
 	}
 
-	private hasFilterWrapper(container: HTMLElement): boolean {
-		return container.querySelector(".base-filter-wrapper") !== null;
+	private hasComponentsWrapper(container: HTMLElement): boolean {
+		return container.querySelector(`.${cls("components-wrapper")}`) !== null;
 	}
 
-	private injectFilterAboveElement(targetElement: HTMLElement, editor: Editor, block: BaseBlock, key: string): void {
-		const container =
-			block.type === "file"
-				? this.findContainerForEmbed(targetElement)
-				: this.findContainerForInlineBlock(targetElement);
+	private injectComponentsAboveElement(
+		targetElement: HTMLElement,
+		editor: Editor,
+		block: BaseBlock,
+		key: string,
+		isEmbed: boolean,
+		originalEditorContent: string
+	): void {
+		const container = isEmbed
+			? this.findContainerForEmbed(targetElement)
+			: this.findContainerForInlineBlock(targetElement);
 
 		if (!container) {
 			return;
 		}
 
-		if (this.hasFilterWrapper(container)) {
+		if (this.hasComponentsWrapper(container)) {
 			return;
 		}
 
-		const { inputDebounceMs } = this.settings;
+		const parsedBase = parseBaseContent(block.content);
+
+		const blockState: BlockState = {
+			filterComponent: null,
+			viewSelector: null,
+			selectedViewIndex: 0,
+			parsedBase,
+			originalBaseContent: block.content,
+			originalEditorContent,
+			isEmbed,
+			isModified: false,
+			block,
+		};
+
+		const componentsWrapper = document.createElement("div");
+		componentsWrapper.className = cls("components-wrapper");
+		componentsWrapper.dataset.blockLine = String(block.startLine);
+		componentsWrapper.dataset.filterKey = key;
+
+		container.insertBefore(componentsWrapper, container.firstChild);
+
+		this.injectViewSelector(componentsWrapper, editor, blockState);
+		this.injectFilterInput(componentsWrapper, editor, block, key, blockState);
+
+		this.blockStates.set(key, blockState);
+	}
+
+	private injectViewSelector(wrapper: HTMLElement, editor: Editor, blockState: BlockState): void {
+		const { showViewSelector } = this.settings;
+		const { parsedBase } = blockState;
+
+		if (!showViewSelector || !parsedBase?.hasMultipleViews) {
+			return;
+		}
+
+		const viewOptions: ViewOption[] = parsedBase.views.map((view, index) => ({
+			name: view.name,
+			index,
+		}));
+
+		const viewSelector = new BaseViewSelector(viewOptions, (viewIndex: number) => {
+			blockState.selectedViewIndex = viewIndex;
+			this.applySelectedView(editor, blockState);
+		});
+
+		const selectorWrapper = viewSelector.createWrapper();
+		wrapper.appendChild(selectorWrapper);
+		viewSelector.attachToWrapper(selectorWrapper);
+
+		blockState.viewSelector = viewSelector;
+	}
+
+	private injectFilterInput(
+		wrapper: HTMLElement,
+		editor: Editor,
+		block: BaseBlock,
+		key: string,
+		blockState: BlockState
+	): void {
+		const { showFilterInput, inputDebounceMs } = this.settings;
+
+		if (!showFilterInput) {
+			return;
+		}
 
 		const filterInput = new BaseFilterInput(
 			(value: string, cursorPosition: number) => {
 				this.pendingFocus = { key, value, cursorPosition };
-				this.updateBaseBlock(editor, block, value);
+				this.applyFilterValue(editor, blockState, value);
 			},
 			"Filter by name...",
 			inputDebounceMs
 		);
 
-		const wrapper = filterInput.createWrapper();
-		wrapper.dataset.blockLine = String(block.startLine);
-		wrapper.dataset.filterKey = key;
-
-		container.insertBefore(wrapper, container.firstChild);
-
-		filterInput.attachToWrapper(wrapper);
+		const filterWrapper = filterInput.createWrapper();
+		wrapper.appendChild(filterWrapper);
+		filterInput.attachToWrapper(filterWrapper);
 		filterInput.setValue(block.filterValue);
 
-		this.filterComponents.set(key, filterInput);
+		blockState.filterComponent = filterInput;
 
 		this.restoreFocusIfPending(key, filterInput);
+	}
+
+	private applySelectedView(editor: Editor, blockState: BlockState): void {
+		if (!blockState.parsedBase) {
+			return;
+		}
+
+		const newContent = reconstructBaseWithView(blockState.parsedBase, blockState.selectedViewIndex);
+		const filterValue = blockState.filterComponent?.getValue() || "";
+		const finalContent = filterValue ? appendNameFilter(newContent, filterValue) : newContent;
+
+		this.applyTemporaryContent(editor, blockState, finalContent);
+	}
+
+	private applyFilterValue(editor: Editor, blockState: BlockState, filterValue: string): void {
+		let baseContent: string;
+
+		if (blockState.parsedBase?.hasMultipleViews) {
+			baseContent = reconstructBaseWithView(blockState.parsedBase, blockState.selectedViewIndex);
+		} else {
+			baseContent = blockState.originalBaseContent;
+		}
+
+		const finalContent = filterValue ? appendNameFilter(baseContent, filterValue) : baseContent;
+		this.applyTemporaryContent(editor, blockState, finalContent);
+
+		blockState.block.filterValue = filterValue;
+	}
+
+	private applyTemporaryContent(editor: Editor, blockState: BlockState, newContent: string): void {
+		const { block } = blockState;
+		const { codeFenceLanguage } = this.settings;
+
+		const wrappedContent = `\`\`\`${codeFenceLanguage}\n${newContent}\n\`\`\``;
+
+		if (blockState.isEmbed) {
+			this.replaceEditorRange(editor, block.startLine, block.startLine + 1, wrappedContent);
+		} else {
+			this.replaceEditorRange(editor, block.startLine, block.endLine + 1, wrappedContent);
+		}
+
+		const newLineCount = wrappedContent.split("\n").length;
+		block.endLine = block.startLine + newLineCount - 1;
+		block.content = newContent;
+		blockState.isModified = true;
+	}
+
+	private replaceEditorRange(editor: Editor, startLine: number, endLine: number, newContent: string): void {
+		const startPos = { line: startLine, ch: 0 };
+		const endLineContent = editor.getLine(endLine - 1);
+		const endPos = { line: endLine - 1, ch: endLineContent?.length || 0 };
+		editor.replaceRange(newContent, startPos, endPos);
+	}
+
+	private getEditorRangeContent(editor: Editor, startLine: number, endLine: number): string {
+		const lines: string[] = [];
+		for (let i = startLine; i < endLine; i++) {
+			lines.push(editor.getLine(i));
+		}
+		return lines.join("\n");
 	}
 
 	private restoreFocusIfPending(key: string, filterInput: BaseFilterInput): void {
@@ -284,51 +470,5 @@ export class BaseBlockProcessor {
 			filterInput.setCursorPosition(this.pendingFocus.cursorPosition);
 			this.pendingFocus = null;
 		}
-	}
-
-	private async updateBaseBlock(editor: Editor, block: BaseBlock, filterValue: string): Promise<void> {
-		const currentContent = this.getCurrentBlockContent(editor, block);
-		const newContent = appendNameFilter(currentContent, filterValue);
-
-		if (block.type === "file" && block.filePath) {
-			await this.updateFileBlock(block.filePath, newContent);
-		} else {
-			this.updateInlineBlock(editor, block, newContent);
-		}
-
-		block.content = newContent;
-		block.filterValue = filterValue;
-	}
-
-	private getCurrentBlockContent(editor: Editor, block: BaseBlock): string {
-		if (block.type === "inline") {
-			const { codeFenceLanguage } = this.settings;
-			const freshBlocks = findInlineBaseBlocks(editor, codeFenceLanguage);
-			const freshBlock = freshBlocks.find(
-				(b) => b.startLine === block.startLine || Math.abs(b.startLine - block.startLine) <= 3
-			);
-			if (freshBlock) {
-				block.startLine = freshBlock.startLine;
-				block.endLine = freshBlock.endLine;
-				return freshBlock.content;
-			}
-		}
-		return block.content;
-	}
-
-	private async updateFileBlock(filePath: string, newContent: string): Promise<void> {
-		const baseFile = this.app.vault.getAbstractFileByPath(filePath);
-		if (baseFile instanceof TFile) {
-			await this.app.vault.modify(baseFile, newContent);
-		}
-	}
-
-	private updateInlineBlock(editor: Editor, block: BaseBlock, newContent: string): void {
-		const startPos = { line: block.startLine + 1, ch: 0 };
-		const endPos = { line: block.endLine, ch: 0 };
-		editor.replaceRange(newContent, startPos, endPos);
-
-		const newLineCount = newContent.split("\n").length - 1;
-		block.endLine = block.startLine + 1 + newLineCount;
 	}
 }
