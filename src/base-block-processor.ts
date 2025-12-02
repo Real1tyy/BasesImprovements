@@ -192,7 +192,7 @@ export class BaseBlockProcessor {
 		);
 	}
 
-	private findEmbedBlockContainer(element: HTMLElement): HTMLElement | null {
+	private findContainerForInlineBlock(element: HTMLElement): HTMLElement | null {
 		let current: HTMLElement | null = element;
 		while (current) {
 			if (current.classList.contains("cm-embed-block")) {
@@ -203,12 +203,25 @@ export class BaseBlockProcessor {
 		return null;
 	}
 
+	private findContainerForEmbed(element: HTMLElement): HTMLElement | null {
+		// For file embeds, the .internal-embed.bases-embed element IS the container
+		if (element.classList.contains("internal-embed") && element.classList.contains("bases-embed")) {
+			return element;
+		}
+		return null;
+	}
+
 	private hasFilterWrapper(container: HTMLElement): boolean {
 		return container.querySelector(".base-filter-wrapper") !== null;
 	}
 
 	private injectFilterAboveElement(targetElement: HTMLElement, editor: Editor, block: BaseBlock, key: string): void {
-		const container = this.findEmbedBlockContainer(targetElement);
+		// Different container logic for inline blocks vs file embeds
+		const container =
+			block.type === "file"
+				? this.findContainerForEmbed(targetElement)
+				: this.findContainerForInlineBlock(targetElement);
+
 		if (!container) {
 			return;
 		}
