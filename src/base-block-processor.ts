@@ -1,8 +1,11 @@
 import type { App, Editor, MarkdownView } from "obsidian";
 import { TFile } from "obsidian";
+import type { Subscription } from "rxjs";
 import { type BaseBlock, type BaseEmbedInfo, findBaseEmbeds, findInlineBaseBlocks } from "./base-detection";
 import { appendNameFilter, extractFilterValue } from "./base-filter";
 import { BaseFilterInput } from "./components";
+import type { SettingsStore } from "./core";
+import type { BasesImprovementsSettings } from "./types";
 
 interface PendingFocus {
 	key: string;
@@ -14,14 +17,30 @@ export class BaseBlockProcessor {
 	private filterComponents: Map<string, BaseFilterInput> = new Map();
 	private isProcessing = false;
 	private pendingFocus: PendingFocus | null = null;
+	private subscription: Subscription | null = null;
+	private settings: BasesImprovementsSettings;
 
-	constructor(private app: App) {}
+	constructor(
+		private app: App,
+		settingsStore: SettingsStore
+	) {
+		this.settings = settingsStore.currentSettings;
+		this.subscription = settingsStore.settings$.subscribe((newSettings) => {
+			this.settings = newSettings;
+		});
+	}
 
 	clearAllFilterComponents(): void {
 		for (const component of this.filterComponents.values()) {
 			component.destroy();
 		}
 		this.filterComponents.clear();
+	}
+
+	destroy(): void {
+		this.subscription?.unsubscribe();
+		this.subscription = null;
+		this.clearAllFilterComponents();
 	}
 
 	private hasActiveInput(): boolean {
@@ -42,7 +61,7 @@ export class BaseBlockProcessor {
 			return;
 		}
 
-		if (!activeView) {
+		if (!activeView || !this.settings.showFilterInput) {
 			this.clearAllFilterComponents();
 			return;
 		}
@@ -58,14 +77,18 @@ export class BaseBlockProcessor {
 	private async processView(activeView: MarkdownView): Promise<void> {
 		const editor = activeView.editor;
 		const currentFile = activeView.file?.path || "";
+		const { codeFenceLanguage, targetEmbeds } = this.settings;
 
-		const inlineBlocks = findInlineBaseBlocks(editor);
-		const embeds = findBaseEmbeds(editor);
+		const inlineBlocks = findInlineBaseBlocks(editor, codeFenceLanguage);
+		const embeds = targetEmbeds ? findBaseEmbeds(editor) : [];
 
 		const expectedKeys = this.buildExpectedKeys(currentFile, inlineBlocks, embeds);
 		this.removeStaleComponents(expectedKeys);
 		this.injectInlineBlockComponents(activeView, editor, currentFile, inlineBlocks);
-		await this.injectEmbedComponents(activeView, editor, currentFile, embeds);
+
+		if (targetEmbeds) {
+			await this.injectEmbedComponents(activeView, editor, currentFile, embeds);
+		}
 	}
 
 	private buildExpectedKeys(currentFile: string, inlineBlocks: BaseBlock[], embeds: BaseEmbedInfo[]): Set<string> {
@@ -216,7 +239,6 @@ export class BaseBlockProcessor {
 	}
 
 	private injectFilterAboveElement(targetElement: HTMLElement, editor: Editor, block: BaseBlock, key: string): void {
-		// Different container logic for inline blocks vs file embeds
 		const container =
 			block.type === "file"
 				? this.findContainerForEmbed(targetElement)
@@ -230,10 +252,16 @@ export class BaseBlockProcessor {
 			return;
 		}
 
-		const filterInput = new BaseFilterInput((value: string, cursorPosition: number) => {
-			this.pendingFocus = { key, value, cursorPosition };
-			this.updateBaseBlock(editor, block, value);
-		}, "Filter by name...");
+		const { inputDebounceMs } = this.settings;
+
+		const filterInput = new BaseFilterInput(
+			(value: string, cursorPosition: number) => {
+				this.pendingFocus = { key, value, cursorPosition };
+				this.updateBaseBlock(editor, block, value);
+			},
+			"Filter by name...",
+			inputDebounceMs
+		);
 
 		const wrapper = filterInput.createWrapper();
 		wrapper.dataset.blockLine = String(block.startLine);
@@ -274,7 +302,8 @@ export class BaseBlockProcessor {
 
 	private getCurrentBlockContent(editor: Editor, block: BaseBlock): string {
 		if (block.type === "inline") {
-			const freshBlocks = findInlineBaseBlocks(editor);
+			const { codeFenceLanguage } = this.settings;
+			const freshBlocks = findInlineBaseBlocks(editor, codeFenceLanguage);
 			const freshBlock = freshBlocks.find(
 				(b) => b.startLine === block.startLine || Math.abs(b.startLine - block.startLine) <= 3
 			);

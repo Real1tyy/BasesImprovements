@@ -21,8 +21,17 @@ export interface BaseEmbedInfo {
 	filePath: string;
 }
 
-const BASE_BLOCK_REGEX = /^[ \t]*```base[ \t]*\r?\n([\s\S]*?)^[ \t]*```[ \t]*$/gm;
 const BASE_EMBED_REGEX = /^[ \t]*!\[\[([^\]|]+\.base)(?:\|[^\]]+)?\]\][ \t]*$/gm;
+const BASE_EMBED_LINE_REGEX = /^!\[\[([^\]|]+\.base)(?:\|[^\]]+)?\]\]$/;
+
+function escapeRegexSpecialChars(str: string): string {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function createBaseBlockRegex(language: string): RegExp {
+	const escapedLang = escapeRegexSpecialChars(language);
+	return new RegExp(`^[ \\t]*\`\`\`${escapedLang}[ \\t]*\\r?\\n([\\s\\S]*?)^[ \\t]*\`\`\`[ \\t]*$`, "gm");
+}
 
 function getFullText(editor: MinimalEditor): string {
 	const count = editor.lineCount();
@@ -51,13 +60,15 @@ function countNewlines(str: string): number {
 }
 
 export function extractBaseEmbed(line: string): string | null {
-	const match = line.trim().match(/^!\[\[([^\]|]+\.base)(?:\|[^\]]+)?\]\]$/);
+	const match = line.trim().match(BASE_EMBED_LINE_REGEX);
 	return match ? match[1] : null;
 }
 
-export function findInlineBaseBlocks(editor: MinimalEditor): BaseBlock[] {
+export function findInlineBaseBlocks(editor: MinimalEditor, language = "base"): BaseBlock[] {
 	const text = getFullText(editor);
-	return Array.from(text.matchAll(BASE_BLOCK_REGEX)).map((match) => {
+	const regex = createBaseBlockRegex(language);
+
+	return Array.from(text.matchAll(regex)).map((match) => {
 		const startLine = getLineNumber(text, match.index);
 		const content = match[1];
 		const endLine = startLine + countNewlines(match[0]);
@@ -74,6 +85,7 @@ export function findInlineBaseBlocks(editor: MinimalEditor): BaseBlock[] {
 
 export function findBaseEmbeds(editor: MinimalEditor): BaseEmbedInfo[] {
 	const text = getFullText(editor);
+
 	return Array.from(text.matchAll(BASE_EMBED_REGEX)).map((match) => ({
 		line: getLineNumber(text, match.index),
 		filePath: match[1],

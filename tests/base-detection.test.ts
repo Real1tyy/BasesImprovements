@@ -213,7 +213,124 @@ describe("base-detection", () => {
 		});
 	});
 
-	describe("findBaseEmbeds", () => {
+	describe("findInlineBaseBlocks with custom language", () => {
+		it("should detect blocks with custom language (dataview)", () => {
+			const lines = ["```dataview", "TABLE file.name", "FROM #tag", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "dataview");
+
+			expect(blocks).toHaveLength(1);
+			expect(blocks[0].startLine).toBe(0);
+			expect(blocks[0].content).toContain("TABLE file.name");
+		});
+
+		it("should detect blocks with custom language (bases)", () => {
+			const lines = ["```bases", "filters:", "  - some filter", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "bases");
+
+			expect(blocks).toHaveLength(1);
+			expect(blocks[0].content).toContain("filters:");
+		});
+
+		it("should detect blocks with custom language (query)", () => {
+			const lines = ["```query", "SELECT * FROM notes", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "query");
+
+			expect(blocks).toHaveLength(1);
+			expect(blocks[0].content).toContain("SELECT");
+		});
+
+		it("should not detect base blocks when targeting different language", () => {
+			const lines = ["```base", "content", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "dataview");
+
+			expect(blocks).toHaveLength(0);
+		});
+
+		it("should not detect dataview blocks when targeting base", () => {
+			const lines = ["```dataview", "TABLE file.name", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "base");
+
+			expect(blocks).toHaveLength(0);
+		});
+
+		it("should handle languages with special regex characters (c++)", () => {
+			const lines = ["```c++", "int main() {}", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "c++");
+
+			expect(blocks).toHaveLength(1);
+			expect(blocks[0].content).toContain("int main");
+		});
+
+		it("should handle languages with special regex characters (c#)", () => {
+			const lines = ["```c#", "public class Test {}", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "c#");
+
+			expect(blocks).toHaveLength(1);
+			expect(blocks[0].content).toContain("public class");
+		});
+
+		it("should find multiple blocks of custom language", () => {
+			const lines = ["```dataview", "TABLE file.name", "```", "", "```dataview", "LIST FROM #tag", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor, "dataview");
+
+			expect(blocks).toHaveLength(2);
+			expect(blocks[0].content).toContain("TABLE");
+			expect(blocks[1].content).toContain("LIST");
+		});
+
+		it("should only find targeted language in mixed document", () => {
+			const lines = [
+				"```javascript",
+				"const x = 1;",
+				"```",
+				"",
+				"```dataview",
+				"TABLE file.name",
+				"```",
+				"",
+				"```base",
+				"filters:",
+				"```",
+			];
+
+			const editor = mockEditor(lines);
+			const dataviewBlocks = findInlineBaseBlocks(editor, "dataview");
+			const baseBlocks = findInlineBaseBlocks(editor, "base");
+			const jsBlocks = findInlineBaseBlocks(editor, "javascript");
+
+			expect(dataviewBlocks).toHaveLength(1);
+			expect(baseBlocks).toHaveLength(1);
+			expect(jsBlocks).toHaveLength(1);
+		});
+
+		it("should use default language (base) when not specified", () => {
+			const lines = ["```base", "content", "```", "", "```dataview", "other", "```"];
+
+			const editor = mockEditor(lines);
+			const blocks = findInlineBaseBlocks(editor);
+
+			expect(blocks).toHaveLength(1);
+			expect(blocks[0].content).toContain("content");
+		});
+	});
+
+	describe("findBaseEmbeds (always .base)", () => {
 		it("should find base embed in document", () => {
 			const lines = ["# My Document", "", "![[Templates/Bases/People.base|People]]", "", "Some text after"];
 
