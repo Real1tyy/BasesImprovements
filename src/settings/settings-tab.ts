@@ -44,6 +44,12 @@ export class BasesImprovementsSettingTab extends PluginSettingTab {
 			name: "Show filter input",
 			desc: "Whether to render the search/filter input above targeted blocks",
 		});
+
+		this.ui.addToggle(containerEl, {
+			key: "showViewSelector",
+			name: "Show view selector",
+			desc: "When a base has multiple views, render buttons to switch between them",
+		});
 	}
 
 	private addDebounceSettings(containerEl: HTMLElement): void {
