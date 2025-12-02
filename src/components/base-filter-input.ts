@@ -1,4 +1,4 @@
-export type FilterChangeCallback = (value: string) => void;
+export type FilterChangeCallback = (value: string, cursorPosition: number) => void;
 
 const DEFAULT_DEBOUNCE_MS = 150;
 
@@ -14,9 +14,14 @@ export class BaseFilterInput {
 		private debounceMs: number = DEFAULT_DEBOUNCE_MS
 	) {}
 
-	initialize(container: HTMLElement): void {
+	createWrapper(): HTMLElement {
 		this.wrapper = document.createElement("div");
 		this.wrapper.className = "base-filter-wrapper";
+		return this.wrapper;
+	}
+
+	attachToWrapper(wrapper: HTMLElement): void {
+		this.wrapper = wrapper;
 
 		this.input = document.createElement("input");
 		this.input.type = "text";
@@ -38,7 +43,12 @@ export class BaseFilterInput {
 		});
 
 		this.wrapper.appendChild(this.input);
-		container.insertBefore(this.wrapper, container.firstChild);
+	}
+
+	initialize(container: HTMLElement): void {
+		const wrapper = this.createWrapper();
+		container.insertBefore(wrapper, container.firstChild);
+		this.attachToWrapper(wrapper);
 	}
 
 	setValue(value: string): void {
@@ -54,6 +64,20 @@ export class BaseFilterInput {
 
 	focus(): void {
 		this.input?.focus();
+	}
+
+	setCursorPosition(position: number): void {
+		if (this.input) {
+			this.input.setSelectionRange(position, position);
+		}
+	}
+
+	getCursorPosition(): number {
+		return this.input?.selectionStart ?? 0;
+	}
+
+	hasFocus(): boolean {
+		return this.input !== null && document.activeElement === this.input;
 	}
 
 	getElement(): HTMLElement | null {
@@ -78,8 +102,9 @@ export class BaseFilterInput {
 
 		const newValue = (this.input?.value || "").trim();
 		if (newValue !== this.currentValue) {
+			const cursorPosition = this.getCursorPosition();
 			this.currentValue = newValue;
-			this.onFilterChange(newValue);
+			this.onFilterChange(newValue, cursorPosition);
 		}
 	}
 
