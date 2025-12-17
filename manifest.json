@@ -1,7 +1,7 @@
 {
 	"id": "bases-improvements",
 	"name": "Bases Improvements",
-	"version": "1.0.0",
+	"version": "0.9.0",
 	"minAppVersion": "1.4.16",
 	"description": "Enhances Bases by adding dynamic search filtering to base code blocks.",
 	"author": "Real1tyy",
