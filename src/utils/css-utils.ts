@@ -1,6 +1,5 @@
 const CSS_PREFIX = "bases-improvements-";
 
-
 export function cls(...classNames: string[]): string {
 	return classNames
 		.flatMap((name) => name.split(/\s+/))

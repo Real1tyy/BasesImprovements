@@ -20,6 +20,7 @@ export default class BasesImprovementsPlugin extends Plugin {
 
 		this.setupDebounce();
 		this.setupEventListeners();
+		this.registerCommands();
 
 		this.subscription = this.settingsStore.settings$.subscribe(() => {
 			this.setupDebounce();
@@ -54,6 +55,16 @@ export default class BasesImprovementsPlugin extends Plugin {
 				this.updateDebounced();
 			})
 		);
+	}
+
+	private registerCommands(): void {
+		this.addCommand({
+			id: "focus-filter-input",
+			name: "Focus filter input",
+			callback: () => {
+				this.processor.focusNextFilterInput();
+			},
+		});
 	}
 
 	private async updateFilters(): Promise<void> {

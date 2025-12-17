@@ -19,6 +19,7 @@ export class BaseBlockProcessor {
 	private pendingFocus: PendingFocus | null = null;
 	private subscription: Subscription | null = null;
 	private settings: BasesImprovementsSettings;
+	private currentFocusIndex = 0;
 
 	constructor(
 		private app: App,
@@ -35,12 +36,25 @@ export class BaseBlockProcessor {
 			component.destroy();
 		}
 		this.filterComponents.clear();
+		this.currentFocusIndex = 0;
 	}
 
 	destroy(): void {
 		this.subscription?.unsubscribe();
 		this.subscription = null;
 		this.clearAllFilterComponents();
+	}
+
+	focusNextFilterInput(): void {
+		const components = Array.from(this.filterComponents.values());
+
+		if (components.length === 0) {
+			return;
+		}
+
+		this.currentFocusIndex = this.currentFocusIndex % components.length;
+		components[this.currentFocusIndex].focus();
+		this.currentFocusIndex = (this.currentFocusIndex + 1) % components.length;
 	}
 
 	private hasActiveInput(): boolean {
