@@ -1,6 +1,6 @@
 {
 	"name": "bases-improvements",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A powerful plugin for enhancing and improving your Obsidian bases workflow.",
 	"main": "main.js",
 	"scripts": {
