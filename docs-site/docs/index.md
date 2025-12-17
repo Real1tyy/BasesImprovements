@@ -5,7 +5,7 @@ slug: /
 
 # Introduction
 
-**Bases Improvements** is an Obsidian plugin that enhances the [Bases plugin](https://github.com/SkepticMystic/bases) workflow by adding **dynamic search filtering** to your base code blocks and embeds.
+**Bases Improvements** is an Obsidian plugin that enhances the [Bases plugin](https://help.obsidian.md/bases) workflow by adding **dynamic search filtering** to your base code blocks and embeds.
 
 ## 🎯 What Does It Do?
 
