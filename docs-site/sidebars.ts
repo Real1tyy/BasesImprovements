@@ -1,45 +1,57 @@
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 const sidebars: SidebarsConfig = {
-  tutorialSidebar: [
-    {
-      type: "doc",
-      id: "intro",
-      label: "Bases Improvements"
-    },
-    "installation",
-    "quickstart",
-    {
-      type: "category",
-      label: "Features",
-      collapsible: true,
-      items: [
-        "features/overview",
-        "features/multiple-calendars",
-        "features/folder-scanning",
-        "features/templater",
-        "features/color-rules",
-        "features/filtering",
-        "features/weekly-stats",
-        "features/global-search",
-        "features/notifications",
-        "features/event-previews",
-        "features/zettelid-naming",
-        "features/batch-operations",
-        "features/event-skipping",
-        "features/undo-redo",
-        "features/recurring-dsl",
-        "features/virtual-events",
-        "features/hotkeys"
-      ]
-    },
-    "configuration",
-    "faq",
-    "troubleshooting",
-    "contributing",
-    "support",
-    "changelog"
-  ]
+	docsSidebar: [
+		{
+			type: "doc",
+			id: "index",
+			label: "Introduction",
+		},
+		{
+			type: "doc",
+			id: "installation",
+			label: "Installation",
+		},
+		{
+			type: "doc",
+			id: "quickstart",
+			label: "Quick Start",
+		},
+		{
+			type: "category",
+			label: "Features",
+			items: [
+				"features/overview",
+				"features/dynamic-filtering",
+				"features/embed-support",
+			],
+		},
+		{
+			type: "doc",
+			id: "configuration",
+			label: "Configuration",
+		},
+		{
+			type: "doc",
+			id: "troubleshooting",
+			label: "Troubleshooting",
+		},
+		{
+			type: "doc",
+			id: "faq",
+			label: "FAQ",
+		},
+		{
+			type: "doc",
+			id: "contributing",
+			label: "Contributing",
+		},
+		{
+			type: "doc",
+			id: "support",
+			label: "Support Me",
+		},
+	],
 };
 
 export default sidebars;

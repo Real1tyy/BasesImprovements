@@ -2,6 +2,8 @@
 
 An Obsidian plugin that enhances the Bases plugin workflow by adding dynamic search filtering to `base` code blocks.
 
+📚 **[View Full Documentation](https://real1tyy.github.io/BasesImprovements/)**
+
 ## Features
 
 ### 🔍 Dynamic Search Filtering
@@ -48,12 +50,14 @@ SELECT title, date
 
 ## Installation
 
-### From Source
+For detailed installation instructions, see the **[Installation Guide](https://real1tyy.github.io/BasesImprovements/installation)**.
 
-1. Clone this repository into your vault's `.obsidian/plugins/` directory
-2. Run `pnpm install` to install dependencies
-3. Run `pnpm build` to build the plugin
-4. Enable "Bases Improvements" in Obsidian's Community Plugins settings
+### Quick Install (Community Plugins)
+
+Once approved:
+1. Open **Settings** → **Community plugins**
+2. Search for **"Bases Improvements"**
+3. Click **Install** and **Enable**
 
 ### Development
 
@@ -62,9 +66,15 @@ SELECT title, date
 3. Run `pnpm dev` for development with hot reload
 4. Make changes to files in `src/`
 
-## Commands
+## Documentation
 
-- **Focus base block filter** - Focuses the first base filter input on the current page
+📚 **[Full Documentation](https://real1tyy.github.io/BasesImprovements/)**
+
+- [Quick Start Guide](https://real1tyy.github.io/BasesImprovements/quickstart)
+- [Features Overview](https://real1tyy.github.io/BasesImprovements/features/overview)
+- [Configuration](https://real1tyy.github.io/BasesImprovements/configuration)
+- [Troubleshooting](https://real1tyy.github.io/BasesImprovements/troubleshooting)
+- [FAQ](https://real1tyy.github.io/BasesImprovements/faq)
 
 ## Architecture
 
@@ -83,13 +93,15 @@ The plugin uses a clean component-based architecture:
 
 ## Configuration
 
-Currently, the plugin works out of the box with no configuration needed. The filter syntax is automatically injected as:
+The plugin offers several configuration options:
 
-```
-file.name.contains("your-search-term")
-```
+- **Code Fence Language** - Target custom language identifiers (default: `base`)
+- **Target Embeds** - Enable/disable filtering for embedded `.base` files
+- **Show Filter Input** - Globally toggle search inputs on/off
+- **Input Debounce** - Adjust responsiveness (0-2000ms)
+- **Update Debounce** - Control component update frequency
 
-This is compatible with Obsidian Bases query language.
+For detailed configuration, see the **[Configuration Guide](https://real1tyy.github.io/BasesImprovements/configuration)**.
 
 ## Technical Details
 
@@ -148,4 +160,7 @@ If you find this plugin helpful, consider:
 - ⭐ Starring the repository
 - 🐛 Reporting issues
 - 💡 Suggesting new features
-- 💰 [Sponsoring on GitHub](https://github.com/sponsors/Real1tyy)
+- 📢 Sharing with others
+- 💰 [Supporting my work](https://github.com/Real1tyy#-support-my-work)
+
+See the **[Support Page](https://real1tyy.github.io/BasesImprovements/support)** for more ways to help!
