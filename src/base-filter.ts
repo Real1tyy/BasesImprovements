@@ -7,6 +7,63 @@ export function appendNameFilter(content: string, filterValue: string): string {
 	const lines = content.split("\n").filter((line) => !line.includes("file.name.contains"));
 
 	if (!filterValue) {
+		// Check if there are any other filters left under "and:"
+		const andIndex = lines.findIndex((line) => line.trim() === "and:");
+
+		if (andIndex !== -1) {
+			// Check if there are any filter lines (- file.) after "and:"
+			let hasOtherFilters = false;
+			for (let i = andIndex + 1; i < lines.length; i++) {
+				const line = lines[i];
+				const trimmed = line.trim();
+
+				// Empty line, continue
+				if (!trimmed) continue;
+
+				// Found a filter line
+				if (line.match(/^\s+- file\./)) {
+					hasOtherFilters = true;
+					break;
+				}
+
+				// Hit a non-filter line (like "views:"), stop searching
+				if (!line.match(/^\s+- /)) {
+					break;
+				}
+			}
+
+			// If no other filters exist, remove the entire filters section
+			if (!hasOtherFilters) {
+				const filtersIndex = lines.findIndex((line) => line.trim() === "filters:");
+
+				if (filtersIndex !== -1) {
+					// Find where the filters section ends
+					let endIndex = andIndex + 1;
+					for (let i = andIndex + 1; i < lines.length; i++) {
+						const trimmed = lines[i].trim();
+
+						// Empty lines within the section
+						if (!trimmed) {
+							endIndex = i + 1;
+							continue;
+						}
+
+						// Still part of filters section (indented filter lines)
+						if (lines[i].match(/^\s+- /)) {
+							endIndex = i + 1;
+							continue;
+						}
+
+						// Hit a non-filter line, stop
+						break;
+					}
+
+					// Remove the entire filters section (filters:, and:, and any empty lines)
+					lines.splice(filtersIndex, endIndex - filtersIndex);
+				}
+			}
+		}
+
 		return lines.join("\n");
 	}
 

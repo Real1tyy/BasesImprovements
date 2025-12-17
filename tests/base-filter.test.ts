@@ -336,6 +336,74 @@ views:
 				expect(result).toContain("views:");
 				expect(result).toContain("type: table");
 			});
+
+			it("CRITICAL: should remove entire filters section when only file.name.contains exists and value is empty", () => {
+				// User's bug: When clearing the filter input, it leaves empty filters: and: structure
+				const content = `filters:
+  and:
+    - file.name.contains("B")
+`;
+				const result = appendNameFilter(content, "");
+
+				// Should NOT contain any filter structure
+				expect(result).not.toContain("filters:");
+				expect(result).not.toContain("and:");
+				expect(result).not.toContain("file.name.contains");
+
+				// Should be completely empty or just whitespace
+				expect(result.trim()).toBe("");
+			});
+
+			it("should remove entire filters section when only file.name.contains exists with views section", () => {
+				const content = `filters:
+  and:
+    - file.name.contains("B")
+views:
+  - type: table
+`;
+				const result = appendNameFilter(content, "");
+
+				// Should NOT contain filter structure
+				expect(result).not.toContain("filters:");
+				expect(result).not.toContain("and:");
+				expect(result).not.toContain("file.name.contains");
+
+				// Should still have views
+				expect(result).toContain("views:");
+				expect(result).toContain("type: table");
+			});
+
+			it("should remove empty filters section with leading empty lines", () => {
+				const content = `
+
+filters:
+  and:
+    - file.name.contains("B")
+`;
+				const result = appendNameFilter(content, "");
+
+				expect(result).not.toContain("filters:");
+				expect(result).not.toContain("and:");
+				expect(result).not.toContain("file.name.contains");
+			});
+
+			it("should remove empty filters section but keep other content", () => {
+				const content = `filters:
+  and:
+    - file.name.contains("Test")
+views:
+  - type: table
+    name: Table
+columns:
+  - name: Title
+`;
+				const result = appendNameFilter(content, "");
+
+				expect(result).not.toContain("filters:");
+				expect(result).not.toContain("and:");
+				expect(result).toContain("views:");
+				expect(result).toContain("columns:");
+			});
 		});
 
 		describe("indentation preservation", () => {
