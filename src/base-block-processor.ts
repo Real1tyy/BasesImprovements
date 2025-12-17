@@ -340,9 +340,13 @@ export class BaseBlockProcessor {
 	private updateInlineBlock(editor: Editor, block: BaseBlock, newContent: string): void {
 		const startPos = { line: block.startLine + 1, ch: 0 };
 		const endPos = { line: block.endLine, ch: 0 };
-		editor.replaceRange(newContent, startPos, endPos);
 
-		const newLineCount = newContent.split("\n").length - 1;
+		// Ensure content ends with newline to keep closing backticks on separate line
+		const contentToInsert = newContent.endsWith("\n") ? newContent : `${newContent}\n`;
+
+		editor.replaceRange(contentToInsert, startPos, endPos);
+
+		const newLineCount = contentToInsert.split("\n").length - 1;
 		block.endLine = block.startLine + 1 + newLineCount;
 	}
 }
