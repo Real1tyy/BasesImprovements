@@ -2,35 +2,88 @@
 sidebar_position: 1
 ---
 
-# Features Overview
+# Features
 
-## 🔍 Dynamic Search Filtering
+## 🔍 Dynamic Filtering
 
-Search inputs are automatically injected above base code blocks, allowing you to filter results by file name in real-time.
+Search inputs automatically appear above base code blocks. Type to filter by file name in real-time.
 
-- No manual WHERE clause editing
-- Instant feedback as you type
-- Preserves existing filters
-- Works with inline blocks and embedded `.base` files
+**Example:**
 
-[Learn more →](/features/dynamic-filtering)
+````markdown
+```base
+FROM notes
+SELECT title, date
+```
+````
+
+Type "project" → becomes:
+
+````markdown
+```base
+FROM notes
+WHERE file.name.contains("project")
+SELECT title, date
+```
+````
+
+### Smart Filter Injection
+
+**No WHERE clause:**
+```
+FROM notes → WHERE file.name.contains("search")
+```
+
+**Existing WHERE clause:**
+```
+WHERE date > "2024-01-01" → WHERE date > "2024-01-01" AND file.name.contains("search")
+```
+
+**Clear input:** Filter removed automatically
+
+## 📎 Embed Support
+
+Works with embedded `.base` files:
+
+**Create:** `my-query.base`
+```
+FROM notes
+WHERE tags.contains("project")
+SELECT title, status
+```
+
+**Embed:** `![[my-query.base]]`
+
+Search input appears above the embed. **Note:** Filtering modifies the actual `.base` file.
+
+**Use Cases:**
+- Reusable queries across multiple notes
+- Shared dashboard queries
+- Template queries
+
+**Toggle:** Settings → Target Embeds (default: enabled)
 
 ## ⌨️ Keyboard Shortcuts
 
-Assign a hotkey to focus and cycle through filter inputs.
+**Focus Filter Input:**
+1. Settings → Hotkeys → "Focus filter input"
+2. Assign shortcut (e.g., `Ctrl+Shift+F`)
+3. Press to focus/cycle through inputs
 
-**Setup:** Settings → Hotkeys → "Focus filter input"
+**Behavior:**
+- Single input: Always focuses same input
+- Multiple inputs: Cycles in order (0 → 1 → 2 → 0...)
 
 ## ⚙️ Configuration
 
-- **Code Fence Language**: Target custom languages (default: `base`)
-- **Debounce Timing**: Adjust responsiveness (default: 150ms)
-- **Toggle Inputs**: Enable/disable globally
-- **Embed Support**: Filter embedded `.base` files
+Settings → Bases Improvements:
 
-[Configuration Guide →](/configuration)
+- **Code Fence Language**: Target language (default: `base`)
+- **Input Debounce**: Typing delay (default: 150ms)
+- **Update Debounce**: Component update delay (default: 150ms)
+- **Show Filter Input**: Toggle globally
+- **Target Embeds**: Enable for `.base` embeds
 
-## 📚 More Details
+[Full Configuration →](/configuration)
 
-- [Dynamic Filtering](/features/dynamic-filtering)
-- [Embed Support](/features/embed-support)
+[Full Troubleshooting →](/troubleshooting)

@@ -18,13 +18,9 @@ const sidebars: SidebarsConfig = {
 			label: "Quick Start",
 		},
 		{
-			type: "category",
+			type: "doc",
+			id: "features/overview",
 			label: "Features",
-			items: [
-				"features/overview",
-				"features/dynamic-filtering",
-				"features/embed-support",
-			],
 		},
 		{
 			type: "doc",
