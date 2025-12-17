@@ -4,21 +4,15 @@ sidebar_position: 3
 
 # Quick Start
 
-Get up and running with Bases Improvements in just a few minutes!
+## Prerequisites
 
-## 🎯 Prerequisites
+- Obsidian 1.4.16+
+- Bases plugin installed and enabled
+- Bases Improvements plugin installed and enabled
 
-Before starting, make sure you have:
+## Basic Usage
 
-- ✅ Obsidian 1.4.16 or higher installed
-- ✅ Bases plugin installed and enabled
-- ✅ Bases Improvements plugin installed and enabled
-
-## 🚀 Basic Usage
-
-### Step 1: Create a Base Block
-
-Create a new note or open an existing one, and add a base code block:
+### 1. Create a Base Block
 
 ````markdown
 ```base
@@ -28,15 +22,9 @@ ORDER BY date DESC
 ```
 ````
 
-### Step 2: See the Search Input
+### 2. Use the Search Input
 
-Once you add the base block, you should immediately see a **search input field** appear above it. This is automatically injected by Bases Improvements.
-
-### Step 3: Start Filtering
-
-Type a search term in the input field, for example: `meeting`
-
-The base block will automatically update to:
+A search input appears above the block. Type to filter:
 
 ````markdown
 ```base
@@ -47,202 +35,95 @@ ORDER BY date DESC
 ```
 ````
 
-The Bases plugin will then execute this updated query and show only files with "meeting" in their name!
+### 3. Clear the Filter
 
-### Step 4: Clear the Filter
+Clear the input to remove the filter.
 
-To remove the filter, simply **clear the search input**. The WHERE clause will be automatically removed.
+## With Existing WHERE Clauses
 
-## 🎨 Working with Existing WHERE Clauses
-
-If your base block already has a WHERE clause, Bases Improvements will **intelligently append** the filter:
-
-### Before Typing
-
+**Before:**
 ````markdown
 ```base
 FROM notes
 WHERE date > "2024-01-01"
-SELECT title, date
+SELECT title
 ```
 ````
 
-### After Typing "project"
-
+**After typing "project":**
 ````markdown
 ```base
 FROM notes
 WHERE date > "2024-01-01" AND file.name.contains("project")
-SELECT title, date
+SELECT title
 ```
 ````
 
-The existing condition is preserved, and the name filter is added with `AND` logic!
+## Embedded Base Files
 
-## 🔗 Working with Embedded Base Files
-
-Bases Improvements also works with **embedded `.base` files**!
-
-### Step 1: Create a Base File
-
-Create a file named `my-query.base` with your base query:
-
+**Create:** `my-query.base`
 ```
 FROM notes
 SELECT title, date
-ORDER BY date DESC
 ```
 
-### Step 2: Embed the File
+**Embed:** `![[my-query.base]]`
 
-In any note, embed the base file:
+A search input appears above the embed.
 
-```markdown
-![[my-query.base]]
-```
+**Note:** Enable "Target Embeds" in settings (default: enabled)
 
-### Step 3: Filter the Embed
+## Configuration
 
-A search input will appear above the embedded query, and you can filter it just like inline blocks!
+Settings → Bases Improvements:
 
-> **Note**: Embed filtering must be enabled in settings (it's on by default). See [Configuration](/configuration) for details.
+- **Code Fence Language**: Default `base`
+- **Target Embeds**: Default enabled
+- **Show Filter Input**: Default enabled
+- **Input Debounce**: Default 150ms
 
-## ⚙️ Basic Configuration
+[Full Configuration Guide →](/configuration)
 
-### Accessing Settings
+## Keyboard Shortcuts
 
-1. Open **Settings** → **Bases Improvements**
-2. You'll see several configuration options
+**Setup:**
+1. Settings → Hotkeys
+2. Search "Focus filter input"
+3. Assign shortcut (e.g., `Ctrl+Shift+F`)
 
-### Key Settings
+**Use:** Press hotkey to focus/cycle through inputs
 
-- **Code Fence Language**: The language identifier to target (default: `base`)
-- **Target Embeds**: Whether to inject filters above embedded `.base` files (default: enabled)
-- **Show Filter Input**: Toggle the search input on/off globally (default: enabled)
-- **Input Debounce**: How long to wait after typing before applying the filter (default: 150ms)
+## Tips
 
-For detailed configuration options, see the [Configuration Guide](/configuration).
+**Adjust Debounce:** Increase for better performance on large vaults
 
-## 💡 Tips & Tricks
+**Press Enter:** Apply filter immediately (bypasses debounce)
 
-### Tip 1: Use Keyboard Shortcuts
+**Combine Filters:** Name filter works with other WHERE conditions
 
-While there's no built-in command to focus filters yet, you can click the input to start typing immediately.
+**Case Insensitive:** `file.name.contains()` is case-insensitive
 
-### Tip 2: Adjust Debounce for Performance
+## Troubleshooting
 
-If you have large vaults or complex queries, increase the **Input Debounce** setting to reduce the frequency of updates while typing.
+**Input not appearing:**
+- Check plugin is enabled
+- Verify code fence language (` ```base `)
+- Check "Show Filter Input" setting
 
-### Tip 3: Combine with Other Filters
+**Filter not updating:**
+- Wait for debounce (150ms)
+- Press Enter to apply immediately
+- Check console (Ctrl/Cmd + Shift + I)
 
-The name filter works great alongside other WHERE conditions:
+**Embeds not working:**
+- Enable "Target Embeds" in settings
+- Verify `.base` file extension
+- Reload note
 
-````markdown
-```base
-FROM notes
-WHERE tags.contains("project") AND date > "2024-01-01"
-SELECT title, date
-```
-````
+[Full Troubleshooting Guide →](/troubleshooting)
 
-Type "alpha" in the search input, and it becomes:
+## Next Steps
 
-````markdown
-```base
-FROM notes
-WHERE tags.contains("project") AND date > "2024-01-01" AND file.name.contains("alpha")
-SELECT title, date
-```
-````
-
-### Tip 4: Case Sensitivity
-
-The `file.name.contains()` filter is **case-insensitive** by default (this is how Bases works). Searching for "Meeting" will match "meeting", "MEETING", and "Meeting".
-
-## 🎯 Common Use Cases
-
-### Use Case 1: Daily Notes Dashboard
-
-Create a dashboard with filtered daily notes:
-
-````markdown
-# Daily Notes
-
-```base
-FROM notes
-WHERE file.folder = "Daily Notes"
-SELECT title, date
-ORDER BY date DESC
-LIMIT 20
-```
-````
-
-Use the search input to quickly find specific days!
-
-### Use Case 2: Project Filtering
-
-Filter project notes on the fly:
-
-````markdown
-# Projects
-
-```base
-FROM notes
-WHERE tags.contains("project")
-SELECT title, status, due-date
-```
-````
-
-Type a project name to narrow down the results.
-
-### Use Case 3: Meeting Notes
-
-Find meeting notes by participant or topic:
-
-````markdown
-# Meetings
-
-```base
-FROM notes
-WHERE file.folder = "Meetings"
-SELECT title, date, attendees
-ORDER BY date DESC
-```
-````
-
-Search for a person's name or meeting topic instantly.
-
-## 🐛 Troubleshooting
-
-### Search Input Not Appearing
-
-1. **Check plugin is enabled**: Settings → Community Plugins → Bases Improvements
-2. **Verify code fence language**: Make sure you're using ` ```base ` (or your configured language)
-3. **Check "Show Filter Input" setting**: Settings → Bases Improvements → Show Filter Input
-
-### Filter Not Updating
-
-1. **Check debounce timing**: The filter applies after you stop typing (default: 150ms)
-2. **Press Enter**: You can press Enter to apply the filter immediately
-3. **Check console for errors**: Open Developer Console (Ctrl/Cmd + Shift + I)
-
-### Embedded Queries Not Working
-
-1. **Check "Target Embeds" setting**: Settings → Bases Improvements → Target Embeds (should be enabled)
-2. **Verify file extension**: Make sure the embedded file has a `.base` extension
-3. **Reload the note**: Try closing and reopening the note
-
-For more troubleshooting help, see the [Troubleshooting Guide](/troubleshooting).
-
-## 🎓 Next Steps
-
-Now that you're up and running, explore more features:
-
-- **[Features Overview](/features/overview)** - Learn about all available features
-- **[Dynamic Filtering](/features/dynamic-filtering)** - Deep dive into filtering capabilities
-- **[Configuration](/configuration)** - Customize the plugin to your workflow
-- **[FAQ](/faq)** - Common questions and answers
-
----
-
-**Happy filtering!** 🎉
+- [Features Overview](/features/overview)
+- [Dynamic Filtering](/features/dynamic-filtering)
+- [Configuration](/configuration)
