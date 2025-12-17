@@ -25,13 +25,13 @@ export default class BasesImprovementsPlugin extends Plugin {
 		this.subscription = this.settingsStore.settings$.subscribe(() => {
 			this.setupDebounce();
 			this.processor.clearAllFilterComponents();
-			this.updateDebounced();
+			void this.updateDebounced();
 		});
 
-		this.updateDebounced();
+		void this.updateDebounced();
 	}
 
-	async onunload() {
+	onunload() {
 		this.subscription?.unsubscribe();
 		this.subscription = null;
 		this.processor.destroy();
@@ -46,13 +46,13 @@ export default class BasesImprovementsPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
 				this.processor.clearAllFilterComponents();
-				this.updateDebounced();
+				void this.updateDebounced();
 			})
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("editor-change", () => {
-				this.updateDebounced();
+				void this.updateDebounced();
 			})
 		);
 	}

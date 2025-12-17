@@ -24,7 +24,7 @@ export class BasesImprovementsSettingTab extends PluginSettingTab {
 	}
 
 	private addTargetSettings(containerEl: HTMLElement): void {
-		new Setting(containerEl).setName("Target settings").setHeading();
+		new Setting(containerEl).setName("Target").setHeading();
 
 		this.ui.addText(containerEl, {
 			key: "codeFenceLanguage",
@@ -47,7 +47,7 @@ export class BasesImprovementsSettingTab extends PluginSettingTab {
 	}
 
 	private addDebounceSettings(containerEl: HTMLElement): void {
-		new Setting(containerEl).setName("Performance settings").setHeading();
+		new Setting(containerEl).setName("Performance").setHeading();
 
 		this.ui.addSlider(containerEl, {
 			key: "inputDebounceMs",
