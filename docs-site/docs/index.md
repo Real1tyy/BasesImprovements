@@ -3,9 +3,31 @@ sidebar_position: 1
 slug: /
 ---
 
+<div align="center">
+  <img src="/img/logo.jpeg" alt="Bases Improvements Logo" width="400" />
+</div>
+
 # Introduction
 
 **Bases Improvements** is an Obsidian plugin that enhances the [Bases plugin](https://help.obsidian.md/bases) workflow by adding **dynamic search filtering** to your base code blocks and embeds.
+
+## 🎥 Quick Tutorial
+
+Watch this quick video tutorial to see Bases Improvements in action:
+
+<div align="center">
+  <iframe
+    width="315"
+    height="560"
+    src="https://www.youtube.com/embed/vqOCACgueKU"
+    title="Bases Improvements Tutorial"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+  </iframe>
+</div>
+
+**[Watch on YouTube](https://www.youtube.com/shorts/vqOCACgueKU)**
 
 ## 🎯 What Does It Do?
 

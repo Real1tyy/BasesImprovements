@@ -68,7 +68,7 @@ const config: Config = {
 			title: "Bases Improvements",
 			logo: {
 				alt: "Bases Improvements Logo",
-				src: "img/logo.svg",
+				src: "img/logo.jpeg",
 				href: "/",
 			},
 			items: [

@@ -4,6 +4,14 @@ An Obsidian plugin that enhances the Bases plugin workflow by adding dynamic sea
 
 📚 **[View Full Documentation](https://real1tyy.github.io/BasesImprovements/)**
 
+## 🎥 Quick Tutorial
+
+Watch a quick tutorial on how to use Bases Improvements:
+
+[![Bases Improvements Tutorial](https://img.youtube.com/vi/vqOCACgueKU/maxresdefault.jpg)](https://www.youtube.com/shorts/vqOCACgueKU)
+
+**[Watch on YouTube →](https://www.youtube.com/shorts/vqOCACgueKU)**
+
 ## Features
 
 ### 🔍 Dynamic Search Filtering
