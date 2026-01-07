@@ -27,20 +27,6 @@ SELECT title, date
 ```
 ````
 
-### Smart Filter Injection
-
-**No WHERE clause:**
-```
-FROM notes → WHERE file.name.contains("search")
-```
-
-**Existing WHERE clause:**
-```
-WHERE date > "2024-01-01" → WHERE date > "2024-01-01" AND file.name.contains("search")
-```
-
-**Clear input:** Filter removed automatically
-
 ## 📎 Embed Support
 
 Works with embedded `.base` files:
@@ -56,11 +42,6 @@ SELECT title, status
 
 Search input appears above the embed. **Note:** Filtering modifies the actual `.base` file.
 
-**Use Cases:**
-- Reusable queries across multiple notes
-- Shared dashboard queries
-- Template queries
-
 **Toggle:** Settings → Target Embeds (default: enabled)
 
 ## ⌨️ Keyboard Shortcuts
@@ -69,10 +50,6 @@ Search input appears above the embed. **Note:** Filtering modifies the actual `.
 1. Settings → Hotkeys → "Focus filter input"
 2. Assign shortcut (e.g., `Ctrl+Shift+F`)
 3. Press to focus/cycle through inputs
-
-**Behavior:**
-- Single input: Always focuses same input
-- Multiple inputs: Cycles in order (0 → 1 → 2 → 0...)
 
 ## ⚙️ Configuration
 
@@ -85,5 +62,4 @@ Settings → Bases Improvements:
 - **Target Embeds**: Enable for `.base` embeds
 
 [Full Configuration →](/configuration)
-
 [Full Troubleshooting →](/troubleshooting)

@@ -38,8 +38,4 @@ Obsidian 1.4.16 or higher is required.
 
 Yes! The plugin works on both desktop and mobile versions of Obsidian.
 
-### How do I update the plugin?
-
-Updates are available through Obsidian's Community Plugins interface. You'll see an "Update" button when a new version is available.
-
 ---
