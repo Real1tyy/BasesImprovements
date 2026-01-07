@@ -19,18 +19,12 @@
 Watch this quick video tutorial to see Bases Improvements in action:
 
 <div align="center">
-  <iframe
-    width="315"
-    height="560"
-    src="https://www.youtube.com/embed/vqOCACgueKU"
-    title="Bases Improvements Tutorial"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen>
-  </iframe>
+  <a href="https://www.youtube.com/shorts/vqOCACgueKU" target="_blank">
+    <img src="https://img.youtube.com/vi/vqOCACgueKU/maxresdefault.jpg" alt="Bases Improvements Tutorial" width="600">
+  </a>
 </div>
 
-**[Watch on YouTube](https://www.youtube.com/shorts/vqOCACgueKU)**
+**[▶️ Watch on YouTube](https://www.youtube.com/shorts/vqOCACgueKU)**
 
 </div>
 
@@ -93,8 +87,6 @@ Bases Improvements automatically injects a **search input field** above every `b
 - **📝 Smart Filter Injection** - Intelligently adds filters to existing WHERE clauses
 - **🔗 Embed Support** - Works with both inline blocks and embedded `.base` files
 - **⚡ Debounced Input** - Configurable debouncing prevents excessive updates
-- **🎨 Clean UI** - Styled search inputs that integrate seamlessly with Obsidian
-- **⚙️ Highly Configurable** - Customize code fence language, debounce timing, and more
 
 ## 🚀 Quick Example
 
@@ -128,52 +120,6 @@ The filter is automatically injected and your base query updates in real-time!
 
 ---
 
-## 🔧 **Requirements**
-
-- **Obsidian**: 1.4.16 or higher
-- **Bases Plugin**: Required for base blocks to actually query your vault
-
----
-
-## 💡 **Use Cases**
-
-- **Quick note filtering** - Instantly filter notes by name without modifying your base query
-- **Exploratory queries** - Test different search terms without manually editing code blocks
-- **Embedded queries** - Filter embedded `.base` files just as easily as inline blocks
-- **Rapid prototyping** - Quickly iterate on query filters during note creation
-- **Research workflows** - Dynamically narrow down results while exploring your vault
-- **Project management** - Filter project notes on the fly during sprint planning
-
----
-
-## 🛠️ **Development**
-
-### Build Commands
-
-- `pnpm dev` - Development build with hot reload
-- `pnpm build` - Production build
-- `pnpm typecheck` - Type checking
-- `pnpm check:fix` - Run Biome linting and formatting
-- `pnpm test` - Run test suite
-
-### Code Quality
-
-This project uses:
-- **Biome** for linting and formatting
-- **TypeScript** for type safety
-- **ESBuild** for fast builds
-- **Vitest** for testing
-
-### Architecture
-
-Clean component-based architecture:
-
-- **`BaseFilterInput`** - Reusable component that handles input rendering, debouncing, and events
-- **`BasesImprovementsPlugin`** - Main plugin class that manages component lifecycle and base block detection
-- **Event-driven updates** - Listens to workspace changes to dynamically update filters
-
----
-
 ## Support & Sponsorship
 
 If you find Bases Improvements useful and want to support its ongoing development, please consider becoming a sponsor. Your contribution helps ensure continuous maintenance, bug fixes, and the introduction of new features.
@@ -187,19 +133,3 @@ Every contribution, no matter the size, is greatly appreciated!
 ## Contributing
 
 MIT-licensed. PRs welcome!
-
----
-
-## Credits & Acknowledgments
-
-Bases Improvements enhances the [Obsidian Bases plugin](https://help.obsidian.md/bases) workflow. We're grateful to the Obsidian team for creating such a powerful querying system that makes this plugin possible.
-
----
-
-<div align="center">
-
-**Made with ❤️ by Real1tyy**
-
-[⭐ Star this repo](https://github.com/Real1tyy/BasesImprovements) • [🐛 Report a bug](https://github.com/Real1tyy/BasesImprovements/issues) • [💡 Request a feature](https://github.com/Real1tyy/BasesImprovements/issues)
-
-</div>
