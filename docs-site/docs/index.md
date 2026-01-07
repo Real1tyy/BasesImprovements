@@ -3,10 +3,6 @@ sidebar_position: 1
 slug: /
 ---
 
-<div align="center">
-  <img src="/img/logo.jpeg" alt="Bases Improvements Logo" width="400" />
-</div>
-
 # Introduction
 
 **Bases Improvements** is an Obsidian plugin that enhances the [Bases plugin](https://help.obsidian.md/bases) workflow by adding **dynamic search filtering** to your base code blocks and embeds.

@@ -1,33 +1,104 @@
+<div align="center">
+
+<img src="docs-site/static/img/logo.jpeg" alt="Bases Improvements Logo" width="400" />
+
 # Bases Improvements
 
-An Obsidian plugin that enhances the Bases plugin workflow by adding dynamic search filtering to `base` code blocks.
+![Downloads](https://img.shields.io/github/downloads/Real1tyy/BasesImprovements/total?label=Downloads&style=for-the-badge)
+![Release](https://img.shields.io/github/v/release/Real1tyy/BasesImprovements?label=Latest%20Release&style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/Real1tyy/BasesImprovements?style=for-the-badge)
+![License](https://img.shields.io/github/license/Real1tyy/BasesImprovements?style=for-the-badge)
+![Obsidian](https://img.shields.io/badge/obsidian-plugin-purple.svg?style=for-the-badge)
 
-📚 **[View Full Documentation](https://real1tyy.github.io/BasesImprovements/)**
+**Supercharge your Obsidian Bases workflow with dynamic search filtering — filter any base query instantly**
+
+---
 
 ## 🎥 Quick Tutorial
 
-Watch a quick tutorial on how to use Bases Improvements:
+Watch this quick video tutorial to see Bases Improvements in action:
 
-[![Bases Improvements Tutorial](https://img.youtube.com/vi/vqOCACgueKU/maxresdefault.jpg)](https://www.youtube.com/shorts/vqOCACgueKU)
+<div align="center">
+  <iframe
+    width="315"
+    height="560"
+    src="https://www.youtube.com/embed/vqOCACgueKU"
+    title="Bases Improvements Tutorial"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+  </iframe>
+</div>
 
-**[Watch on YouTube →](https://www.youtube.com/shorts/vqOCACgueKU)**
+**[Watch on YouTube](https://www.youtube.com/shorts/vqOCACgueKU)**
 
-## Features
+</div>
 
-### 🔍 Dynamic Search Filtering
+---
 
-Automatically injects a search input field above every `base` code block in your notes. As you type, the plugin dynamically updates the base block content to include a `file.name.contains("value")` filter.
+## 📚 Documentation
 
-**How it works:**
+**[View Full Documentation →](https://real1tyy.github.io/BasesImprovements/)**
 
-1. **Detects `base` blocks** - The plugin watches your active note for any code blocks with the `base` language identifier
-2. **Injects input form** - Renders a styled search input above each base block
-3. **Live updates** - As you type, the filter is automatically added/updated in the base block with debounced input (150ms)
-4. **Smart filtering** - Intelligently adds the filter to existing WHERE clauses or creates new ones
+Quick Links:
+- [Installation](https://real1tyy.github.io/BasesImprovements/installation) • [Quickstart](https://real1tyy.github.io/BasesImprovements/quickstart) • [Configuration](https://real1tyy.github.io/BasesImprovements/configuration)
+- [Features Overview](https://real1tyy.github.io/BasesImprovements/features/overview) • [FAQ](https://real1tyy.github.io/BasesImprovements/faq) • [Troubleshooting](https://real1tyy.github.io/BasesImprovements/troubleshooting)
 
-### Example Usage
+---
 
-Before typing in the filter:
+## 📦 Installation
+
+Bases Improvements is currently **awaiting approval** for the Obsidian Community Plugin store. In the meantime, you can install it using one of these methods:
+
+### 🎯 Recommended: BRAT (Beta Reviewers Auto-update Tool)
+
+The easiest way to install and keep Bases Improvements up to date:
+
+1. Install the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat) from Obsidian's Community Plugins
+2. Open BRAT settings (Settings → BRAT)
+3. Click **Add Beta Plugin**
+4. Enter this repository URL: `https://github.com/Real1tyy/BasesImprovements`
+5. Click **Add Plugin**
+6. Enable Bases Improvements in Settings → Community Plugins
+
+**Benefits**: Automatic updates, smooth experience, one-click installation
+
+### 📥 Manual Installation from GitHub Releases
+
+1. Go to [Releases](https://github.com/Real1tyy/BasesImprovements/releases)
+2. Download the latest release assets:
+   - `main.js`
+   - `manifest.json`
+   - `styles.css`
+3. Create folder: `{VaultFolder}/.obsidian/plugins/bases-improvements/`
+4. Move downloaded files into the folder
+5. Reload Obsidian (Ctrl/Cmd + R)
+6. Enable Bases Improvements in Settings → Community Plugins
+
+**Note**: All releases are versioned and tagged for easy reference.
+
+### ✨ Coming Soon
+
+Once approved for the Community Plugin store, you'll be able to install Bases Improvements directly from Settings → Community Plugins → Browse.
+
+---
+
+## 🎯 What Does It Do?
+
+Bases Improvements automatically injects a **search input field** above every `base` code block in your notes. As you type, the plugin dynamically updates the base block content to include a `file.name.contains("value")` filter, making it easy to search and filter your query results on the fly.
+
+## ✨ Key Features
+
+- **🔍 Dynamic Search Filtering** - Live search input injected above base blocks
+- **📝 Smart Filter Injection** - Intelligently adds filters to existing WHERE clauses
+- **🔗 Embed Support** - Works with both inline blocks and embedded `.base` files
+- **⚡ Debounced Input** - Configurable debouncing prevents excessive updates
+- **🎨 Clean UI** - Styled search inputs that integrate seamlessly with Obsidian
+- **⚙️ Highly Configurable** - Customize code fence language, debounce timing, and more
+
+## 🚀 Quick Example
+
+### Before Typing
 
 ````markdown
 ```base
@@ -36,7 +107,7 @@ SELECT title, date
 ```
 ````
 
-After typing "meeting" in the injected input:
+### After Typing "meeting"
 
 ````markdown
 ```base
@@ -46,99 +117,36 @@ SELECT title, date
 ```
 ````
 
-If there's already a WHERE clause, it appends with AND:
+The filter is automatically injected and your base query updates in real-time!
 
-````markdown
-```base
-FROM notes
-WHERE date > "2024-01-01" AND file.name.contains("meeting")
-SELECT title, date
-```
-````
+## 🎬 How It Works
 
-## Installation
+1. **Detects Base Blocks** - Scans your active note for code blocks with the configured language (default: `base`)
+2. **Injects Search Input** - Renders a styled search input above each detected block
+3. **Live Updates** - As you type, the filter is automatically added or updated in the base block
+4. **Smart Filtering** - Handles existing WHERE clauses by appending with AND logic
 
-For detailed installation instructions, see the **[Installation Guide](https://real1tyy.github.io/BasesImprovements/installation)**.
+---
 
-### Quick Install (Community Plugins)
+## 🔧 **Requirements**
 
-Once approved:
-1. Open **Settings** → **Community plugins**
-2. Search for **"Bases Improvements"**
-3. Click **Install** and **Enable**
+- **Obsidian**: 1.4.16 or higher
+- **Bases Plugin**: Required for base blocks to actually query your vault
 
-### Development
+---
 
-1. Clone the repository
-2. Run `pnpm install`
-3. Run `pnpm dev` for development with hot reload
-4. Make changes to files in `src/`
+## 💡 **Use Cases**
 
-## Documentation
+- **Quick note filtering** - Instantly filter notes by name without modifying your base query
+- **Exploratory queries** - Test different search terms without manually editing code blocks
+- **Embedded queries** - Filter embedded `.base` files just as easily as inline blocks
+- **Rapid prototyping** - Quickly iterate on query filters during note creation
+- **Research workflows** - Dynamically narrow down results while exploring your vault
+- **Project management** - Filter project notes on the fly during sprint planning
 
-📚 **[Full Documentation](https://real1tyy.github.io/BasesImprovements/)**
+---
 
-- [Quick Start Guide](https://real1tyy.github.io/BasesImprovements/quickstart)
-- [Features Overview](https://real1tyy.github.io/BasesImprovements/features/overview)
-- [Configuration](https://real1tyy.github.io/BasesImprovements/configuration)
-- [Troubleshooting](https://real1tyy.github.io/BasesImprovements/troubleshooting)
-- [FAQ](https://real1tyy.github.io/BasesImprovements/faq)
-
-## Architecture
-
-The plugin uses a clean component-based architecture:
-
-- **`BaseFilterInput`** - Reusable component that handles input rendering, debouncing, and events
-- **`BasesImprovementsPlugin`** - Main plugin class that manages component lifecycle and base block detection
-- **Event-driven updates** - Listens to workspace changes to dynamically update filters
-
-### Key Features
-
-- ✅ **Debounced input** - 150ms debounce prevents excessive updates
-- ✅ **Smart filter injection** - Handles both new filters and updates to existing filters
-- ✅ **Component composition** - Clean separation of concerns with reusable components
-- ✅ **Memory management** - Proper cleanup of components and event listeners
-
-## Configuration
-
-The plugin offers several configuration options:
-
-- **Code Fence Language** - Target custom language identifiers (default: `base`)
-- **Target Embeds** - Enable/disable filtering for embedded `.base` files
-- **Show Filter Input** - Globally toggle search inputs on/off
-- **Input Debounce** - Adjust responsiveness (0-2000ms)
-- **Update Debounce** - Control component update frequency
-
-For detailed configuration, see the **[Configuration Guide](https://real1tyy.github.io/BasesImprovements/configuration)**.
-
-## Technical Details
-
-### Component Structure
-
-```
-src/
-├── components/
-│   ├── base-filter-input.ts  # Reusable filter input component
-│   └── index.ts               # Component exports
-└── main.ts                    # Main plugin class
-```
-
-### How It Works
-
-1. **Detection**: The plugin scans the active note for `base` code blocks using line-by-line parsing
-2. **Injection**: For each base block found, creates a `BaseFilterInput` component and injects it into the DOM
-3. **Updates**: When the input changes, the component triggers a callback that:
-   - Extracts the current block content
-   - Adds/updates the `file.name.contains()` filter
-   - Replaces the block content in the editor
-4. **Cleanup**: Components are properly destroyed when the note changes or the plugin unloads
-
-## Compatibility
-
-- **Obsidian**: 1.8.7+
-- **Bases Plugin**: Required for the base blocks to actually query your vault
-
-## Development
+## 🛠️ **Development**
 
 ### Build Commands
 
@@ -146,6 +154,7 @@ src/
 - `pnpm build` - Production build
 - `pnpm typecheck` - Type checking
 - `pnpm check:fix` - Run Biome linting and formatting
+- `pnpm test` - Run test suite
 
 ### Code Quality
 
@@ -153,22 +162,44 @@ This project uses:
 - **Biome** for linting and formatting
 - **TypeScript** for type safety
 - **ESBuild** for fast builds
+- **Vitest** for testing
 
-## License
+### Architecture
 
-MIT License - See LICENSE file for details
+Clean component-based architecture:
 
-## Author
+- **`BaseFilterInput`** - Reusable component that handles input rendering, debouncing, and events
+- **`BasesImprovementsPlugin`** - Main plugin class that manages component lifecycle and base block detection
+- **Event-driven updates** - Listens to workspace changes to dynamically update filters
 
-Real1tyy
+---
 
-## Support
+## Support & Sponsorship
 
-If you find this plugin helpful, consider:
-- ⭐ Starring the repository
-- 🐛 Reporting issues
-- 💡 Suggesting new features
-- 📢 Sharing with others
-- 💰 [Supporting my work](https://github.com/Real1tyy#-support-my-work)
+If you find Bases Improvements useful and want to support its ongoing development, please consider becoming a sponsor. Your contribution helps ensure continuous maintenance, bug fixes, and the introduction of new features.
 
-See the **[Support Page](https://real1tyy.github.io/BasesImprovements/support)** for more ways to help!
+- [Support My Work](https://github.com/Real1tyy#-support-my-work)
+
+Every contribution, no matter the size, is greatly appreciated!
+
+---
+
+## Contributing
+
+MIT-licensed. PRs welcome!
+
+---
+
+## Credits & Acknowledgments
+
+Bases Improvements enhances the [Obsidian Bases plugin](https://help.obsidian.md/bases) workflow. We're grateful to the Obsidian team for creating such a powerful querying system that makes this plugin possible.
+
+---
+
+<div align="center">
+
+**Made with ❤️ by Real1tyy**
+
+[⭐ Star this repo](https://github.com/Real1tyy/BasesImprovements) • [🐛 Report a bug](https://github.com/Real1tyy/BasesImprovements/issues) • [💡 Request a feature](https://github.com/Real1tyy/BasesImprovements/issues)
+
+</div>
