@@ -20,11 +20,6 @@ Specify which code fence language to target.
 
 Enable/disable filter inputs for embedded `.base` files.
 
-### Show Filter Input
-**Default:** Enabled
-
-Globally toggle search inputs on/off.
-
 ### Input Debounce
 **Default:** 150ms
 **Range:** 0-2000ms

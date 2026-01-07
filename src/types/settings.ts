@@ -5,7 +5,6 @@ export const BasesImprovementsSettingsSchema = z.object({
 	// Target Settings
 	codeFenceLanguage: z.string().default(SETTINGS_DEFAULTS.DEFAULT_CODE_FENCE_LANGUAGE),
 	targetEmbeds: z.boolean().default(SETTINGS_DEFAULTS.DEFAULT_TARGET_EMBEDS),
-	showFilterInput: z.boolean().default(SETTINGS_DEFAULTS.DEFAULT_SHOW_FILTER_INPUT),
 
 	// Debounce Settings
 	inputDebounceMs: z.number().int().min(0).max(2000).default(SETTINGS_DEFAULTS.DEFAULT_INPUT_DEBOUNCE_MS),

@@ -56,10 +56,10 @@ Search input appears above the embed. **Note:** Filtering modifies the actual `.
 Settings → Bases Improvements:
 
 - **Code Fence Language**: Target language (default: `base`)
+- **Target Embeds**: Enable for `.base` embeds
 - **Input Debounce**: Typing delay (default: 150ms)
 - **Update Debounce**: Component update delay (default: 150ms)
-- **Show Filter Input**: Toggle globally
-- **Target Embeds**: Enable for `.base` embeds
 
 [Full Configuration →](/configuration)
+
 [Full Troubleshooting →](/troubleshooting)

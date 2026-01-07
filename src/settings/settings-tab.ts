@@ -38,12 +38,6 @@ export class BasesImprovementsSettingTab extends PluginSettingTab {
 			name: "Target embeds",
 			desc: "Whether to also inject filter inputs above embedded .base files (![[file.base]])",
 		});
-
-		this.ui.addToggle(containerEl, {
-			key: "showFilterInput",
-			name: "Show filter input",
-			desc: "Whether to render the search/filter input above targeted blocks",
-		});
 	}
 
 	private addDebounceSettings(containerEl: HTMLElement): void {

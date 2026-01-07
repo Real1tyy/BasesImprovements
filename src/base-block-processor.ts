@@ -75,7 +75,7 @@ export class BaseBlockProcessor {
 			return;
 		}
 
-		if (!activeView || !this.settings.showFilterInput) {
+		if (!activeView) {
 			this.clearAllFilterComponents();
 			return;
 		}
