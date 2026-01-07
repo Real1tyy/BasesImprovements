@@ -39,40 +39,6 @@ For manual installation from GitHub releases:
 5. Reload Obsidian or restart the app
 6. Enable the plugin in **Settings** → **Community plugins**
 
-## 🛠️ Method 4: From Source (Development)
-
-For developers who want to build from source:
-
-1. Clone the repository into your vault's `.obsidian/plugins/` directory:
-   ```bash
-   cd /path/to/vault/.obsidian/plugins/
-   git clone https://github.com/Real1tyy/BasesImprovements.git bases-improvements
-   cd bases-improvements
-   ```
-
-2. Install dependencies:
-   ```bash
-   pnpm install
-   ```
-
-3. Build the plugin:
-   ```bash
-   pnpm build
-   ```
-
-4. Reload Obsidian or restart the app
-5. Enable the plugin in **Settings** → **Community plugins**
-
-### Development Mode
-
-For active development with hot reload:
-
-```bash
-pnpm dev
-```
-
-This will watch for file changes and automatically rebuild the plugin.
-
 ## ✅ Verification
 
 After installation, verify everything is working:
@@ -94,32 +60,18 @@ SELECT title
 ## 🔄 Updating
 
 ### Community Plugins
-
 Updates will be available automatically through the Community Plugins interface. Simply click **Update** when a new version is available.
 
 ### BRAT
-
 BRAT will automatically check for updates. You can manually check by:
-
 1. Opening **Settings** → **BRAT**
 2. Clicking **Check for updates**
 3. Updating if a new version is available
 
 ### Manual Installation
-
 Download the latest release files and replace the existing files in your plugin folder.
 
-### From Source
-
-Pull the latest changes and rebuild:
-
-```bash
-git pull
-pnpm install
-pnpm build
-```
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 If you encounter issues during installation:
 
@@ -130,13 +82,6 @@ If you encounter issues during installation:
 
 For more help, see the [Troubleshooting Guide](/troubleshooting) or [open an issue on GitHub](https://github.com/Real1tyy/BasesImprovements/issues).
 
-## 📋 Prerequisites
+---
 
-Before using Bases Improvements, make sure you have:
-
-- **Obsidian 1.4.16+** installed
-- **Bases Plugin** installed and enabled (this plugin enhances Bases, so you need it!)
-
-## 🎯 Next Steps
-
-Once installed, check out the [Quick Start Guide](/quickstart) to configure and start using Bases Improvements!
+**Next Step:** Once installed, check out the [Quick Start Guide](/quickstart) to configure and start using Bases Improvements!
