@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+main.js
+build/
+coverage/
+
+# Generated files
+*.d.ts
+
+# Documentation site
+docs-site/
+
+# Obsidian
+.obsidian/
+
+# Cache
+.cache/
+.eslintcache
+htmlcov/
+pnpm-lock.yaml

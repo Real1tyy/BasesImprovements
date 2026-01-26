@@ -35,6 +35,7 @@ Watch this quick video tutorial to see Bases Improvements in action:
 **[View Full Documentation →](https://real1tyy.github.io/BasesImprovements/)**
 
 Quick Links:
+
 - [Installation](https://real1tyy.github.io/BasesImprovements/installation) • [Quickstart](https://real1tyy.github.io/BasesImprovements/quickstart) • [Configuration](https://real1tyy.github.io/BasesImprovements/configuration)
 - [Features Overview](https://real1tyy.github.io/BasesImprovements/features/overview) • [FAQ](https://real1tyy.github.io/BasesImprovements/faq) • [Troubleshooting](https://real1tyy.github.io/BasesImprovements/troubleshooting)
 

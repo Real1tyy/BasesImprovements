@@ -4,7 +4,7 @@ slug: /
 ---
 
 <div align="center">
-  <img src="/BasesImprovements/img/logo.jpeg" alt="Bases Improvements Logo" width="400" />
+  <img src="/img/logo.jpeg" alt="Bases Improvements Logo" width="400" />
 </div>
 
 # Introduction
